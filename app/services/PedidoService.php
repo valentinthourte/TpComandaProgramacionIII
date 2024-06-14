@@ -3,22 +3,25 @@
 
 require_once("model/Producto.php");
 require_once("services/ComandaService.php");
+require_once("services/ProductoService.php");
 require_once("helpers/ArrayHelper.php");
 
 class PedidoService extends AService {
     private $LONGITUD_NUMERO_PEDIDO = 5;
     private ComandaService $comandaService;
+    private ProductoService $productoService;
 
     public function __construct() {
         parent::__construct();
         $this->comandaService = new ComandaService();
+        $this->productoService = new ProductoService();
     }
 
     public function crearPedido($parametros) {
         $this->validarDatosPedido($parametros);
         $numeroPedido = Pedido::generarNumeroPedido($this->LONGITUD_NUMERO_PEDIDO);
-        $listaProductos = json_decode($parametros["productos"]);
-        $cliente = $parametros["cliente"];
+        $listaProductos = $this->productoService->parsearProductos(json_decode($parametros["productos"]));
+        $cliente = $parametros["cliente"]; 
         $listaAgrupada = ArrayHelper::groupBy($listaProductos, Producto::PropiedadAgrupacion()); 
         $fechaHoraInicioPreparacion = empty($parametros["fechaHoraInicioPreparacion"]) ? date('Y-m-d H:i:s') : $parametros["fechaHoraInicioPreparacion"];
         $tiempoPreparacion = ArrayHelper::encontrarMaximoPorPropiedad($listaProductos, "tiempoPreparacionBase")->tiempoPreparacionBase;

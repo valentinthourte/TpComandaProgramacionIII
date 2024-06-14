@@ -35,6 +35,9 @@ class Producto implements IEntity {
     public function obtenerId() {
         return $this->id;
     }
+    public function asignarId($id) {
+        $this->id = $id;
+    }
 
     public static function obtenerConsultaInsert() {
         return "INSERT INTO Producto(nombre, precio, tiempoPreparacionBase, tipoUsuarioPreparacionId) VALUES (:nombre,:precio,:tiempoPreparacionBase,:tipoUsuarioPreparacion)";

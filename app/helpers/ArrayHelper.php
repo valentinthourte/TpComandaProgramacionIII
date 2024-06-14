@@ -6,15 +6,16 @@ class ArrayHelper {
 
     public static function groupBy($items, $property) {
         $agrupados = array();
-
         foreach($items as $item) {
-            $valorAgrupacion = ($item )->$property;
-            if (!array_key_exists($valorAgrupacion, $agrupados)) {
-                $agrupados[$valorAgrupacion] = array();
-            }
-            else {
-                array_push($agrupados[$valorAgrupacion], $item);
-            }
+            $key = $item->$property;
+                if (!array_key_exists($key, $agrupados)) {
+                    $agrupados[$key] = array($item);
+                }
+                else {
+                    $arreglo = $agrupados[$key];
+                    array_push($arreglo, $item);
+                    $agrupados[$key] = $arreglo;
+                }
         }
         return $agrupados;
     }

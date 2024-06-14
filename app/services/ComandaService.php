@@ -1,8 +1,8 @@
 <?php
 
-
 require_once("AService.php");
 require_once("helpers/ArrayHelper.php");
+require_once("model/ComandaProducto.php");
 
 class ComandaService extends AService {
 
@@ -22,13 +22,12 @@ class ComandaService extends AService {
         $comandaId = $this->crearEntidad($comanda);
         $comanda->asignarId($comandaId);
         $listaComandaProducto = array();
-        
-        foreach($comanda->obtenerProductos() as $producto) {
+        foreach($comanda->obtenerProductos() as $key=>$producto) {
             $comandaProducto = new ComandaProducto($comandaId, $producto->obtenerId());
             $this->crearEntidad($comandaProducto);
             array_push($listaComandaProducto, $comandaProducto);
         }
-        return $comandaProducto;
+        return $comanda;
     }
 
     public function obtenerTiempoEstimadoPreparacion($listaComandas) {

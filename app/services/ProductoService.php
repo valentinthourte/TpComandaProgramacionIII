@@ -23,4 +23,14 @@ class ProductoService extends AService {
 
         return $consulta->fetchAll(PDO::FETCH_CLASS, Producto::class);
     }
+
+    public function parsearProductos($array) {
+        $productos = array();
+        foreach($array as $productoJson) {
+            $producto = new Producto($productoJson->nombre, $productoJson->precio, $productoJson->tiempoPreparacionBase, $productoJson->tipoUsuarioPreparacionId);
+            $producto->asignarId($productoJson->id);
+            array_push($productos, $producto);
+        }
+        return $productos;
+    }
 }
