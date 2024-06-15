@@ -36,4 +36,17 @@ class PedidoService extends AService {
             throw new InvalidArgumentException("El cliente o los productos recibidos no son válidos. ");
         }
     }
+
+    public function leerPedidos() {
+        $query = Pedido::obtenerConsultaSelect();
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->execute();
+
+        $pedidos = $consulta->fetchAll(PDO::FETCH_CLASS, Pedido::class);
+        foreach($pedidos as $pedido) {
+            $comandas = $this->comandaService->obtenerComandasDePedido($pedido->numeroPedido);
+            $pedido->comandas = $comandas;
+        }
+        return $pedidos;
+    }
 }

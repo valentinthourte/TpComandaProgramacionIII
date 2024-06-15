@@ -14,7 +14,7 @@ class Pedido implements IEntity {
     public $fechaHoraInicioPreparacion;
     public $tiempoEstimadoPreparacion;
     public $codigoMesa;
-    public EstadoPedido $estadoPedido;
+    public $estadoPedido;
     
     function __construct()
 	{
@@ -29,13 +29,18 @@ class Pedido implements IEntity {
 		}
 	}
 
-    public function __construct5($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $tiempoEstimadoPreparacion, $codigoMesa) {
+    public function __construct6($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $tiempoEstimadoPreparacion, $codigoMesa, $estadoPedido) {
         $this->numeroPedido = $numeroPedido;
         $this->cliente = $cliente;
         $this->fechaHoraInicioPreparacion = $fechaHoraInicioPreparacion;
         $this->tiempoEstimadoPreparacion = $tiempoEstimadoPreparacion;
         $this->codigoMesa = $codigoMesa;
-        $this->estadoPedido = EstadoPedido::Pendiente;
+        $this->estadoPedido = match ($estadoPedido) {
+            "Pendiente" => EstadoPedido::Pendiente,
+            "EnPreparacion" => EstadoPedido::EnPreparacion,
+            "ListoParaServir" => EstadoPedido::ListoParaServir
+        };
+        // $this->estadoPedido = EstadoPedido::Pendiente;
     }
 
     public static function generarNumeroPedido($tamaño) {
@@ -57,5 +62,10 @@ class Pedido implements IEntity {
 
     public static function obtenerConsultaSelect() {
         return "SELECT * FROM Pedido";
+    }
+
+    public static function obtenerConsultaSelectPorId()
+    {
+        return Pedido::obtenerConsultaSelect() . " WHERE id = :id";
     }
 }

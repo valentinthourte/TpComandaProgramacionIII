@@ -26,7 +26,14 @@ class PedidoController extends AController implements IController {
         }
     }
     public function leerTodos($request, $response, $args) {
-
+        try {
+            $pedidos = $this->pedidoService->leerPedidos();
+            $content = json_encode($pedidos);
+            return $this->setearResponse($response, $content);
+        }
+        catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
     public function leerUno($request, $response, $args) {
 

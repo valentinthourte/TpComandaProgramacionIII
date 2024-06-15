@@ -42,6 +42,10 @@ class Usuario implements IEntity {
         return "INSERT INTO Usuario(nombre, clave, tipoUsuarioId) VALUES (:nombre, :clave, :tipoUsuarioId)";
     }
     public static function obtenerConsultaSelect() {
-        
+        return "SELECT * FROM Usuario";
+    }
+
+    public static function obtenerConsultaSelectPorId() {
+        return Usuario::obtenerConsultaSelect() . " WHERE id = :id";
     }
 }

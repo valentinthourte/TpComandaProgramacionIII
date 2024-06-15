@@ -53,4 +53,8 @@ class Producto implements IEntity {
     public static function obtenerConsultaSelectPorNombreProducto() {
         return Producto::obtenerConsultaSelect() . " WHERE nombreProducto = :x";
     }
+
+    public static function obtenerConsultaSelectPorId() {
+        return Producto::obtenerConsultaSelect() . " WHERE id = :id";
+    }
 }

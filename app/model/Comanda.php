@@ -6,7 +6,7 @@ require_once("enums/EstadoComanda.php");
 class Comanda implements IEntity {
     public $id;
     public $numeroPedido;
-    public EstadoComanda $estadoComanda;
+    public $estadoComanda;
     public $tipoUsuarioPreparacionId;
     public $productos;
     public $tiempoPreparacionEstimado;
@@ -28,6 +28,12 @@ class Comanda implements IEntity {
         $this->numeroPedido = $numeroPedido;
         $this->tipoUsuarioPreparacionId = $tipoUsuarioPreparacionId;
         $this->estadoComanda = EstadoComanda::Pendiente;
+    }
+
+    public function __construct3($numeroPedido, $tipoUsuarioPreparacionId, $estadoComanda) {
+        $this->numeroPedido = $numeroPedido;
+        $this->tipoUsuarioPreparacionId = $tipoUsuarioPreparacionId;
+        $this->estadoComanda = $estadoComanda;
     }
 
     public function asignarId($id) {
@@ -53,6 +59,14 @@ class Comanda implements IEntity {
     public static function obtenerConsultaSelect()
     {
         return "SELECT * FROM Comanda";
+    }
+
+    public static function obtenerConsultaSelectPorId() {
+        return Comanda::obtenerConsultaSelect() . " WHERE id = :id";
+    }
+
+    public static function obtenerConsultaSelectPorNumeroPedido() {
+        return Comanda::obtenerConsultaSelect() . " WHERE numeroPedido = :x";
     }
 
 }

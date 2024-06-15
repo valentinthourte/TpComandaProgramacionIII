@@ -26,4 +26,5 @@ abstract class AService {
         }
         return $this->accesoDatos->obtenerUltimoId();
     }
+
 }

@@ -33,4 +33,13 @@ class ProductoService extends AService {
         }
         return $productos;
     }
+
+    public function obtenerProductoPorId($id) {
+        $query = Producto::obtenerConsultaSelectPorId();
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->bindValue(":id", $id);
+        $consulta->execute();
+
+        return $consulta->fetchObject(Producto::class);
+    }
 }
