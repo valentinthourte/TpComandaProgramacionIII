@@ -181,6 +181,26 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GetPedidos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/pedidos/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"pedidos",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
