@@ -48,6 +48,14 @@ class Comanda implements IEntity {
         $this->productos = $productos;
     }
 
+    public function obtenerMonto() {
+        $monto = 0;
+        foreach($this->productos as $producto) {
+            $monto += $producto->precio;
+        }
+        return $monto;
+    }
+
     public static function obtenerConsultaInsert() {
         return "INSERT INTO Comanda(numeroPedido, estadoComanda, tipoUsuarioPreparacionId) VALUES (:numeroPedido, :estadoComanda, :tipoUsuarioPreparacionId)";
     }
@@ -68,5 +76,6 @@ class Comanda implements IEntity {
     public static function obtenerConsultaSelectPorNumeroPedido() {
         return Comanda::obtenerConsultaSelect() . " WHERE numeroPedido = :x";
     }
+
 
 }

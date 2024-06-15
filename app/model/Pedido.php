@@ -29,6 +29,15 @@ class Pedido implements IEntity {
 		}
 	}
 
+    public function __construct5($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $tiempoEstimadoPreparacion, $codigoMesa) {
+        $this->numeroPedido = $numeroPedido;
+        $this->cliente = $cliente;
+        $this->fechaHoraInicioPreparacion = $fechaHoraInicioPreparacion;
+        $this->tiempoEstimadoPreparacion = $tiempoEstimadoPreparacion;
+        $this->codigoMesa = $codigoMesa;
+        $this->estadoPedido = EstadoPedido::Pendiente;
+    }
+
     public function __construct6($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $tiempoEstimadoPreparacion, $codigoMesa, $estadoPedido) {
         $this->numeroPedido = $numeroPedido;
         $this->cliente = $cliente;

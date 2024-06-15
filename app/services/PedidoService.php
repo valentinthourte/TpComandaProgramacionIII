@@ -46,7 +46,16 @@ class PedidoService extends AService {
         foreach($pedidos as $pedido) {
             $comandas = $this->comandaService->obtenerComandasDePedido($pedido->numeroPedido);
             $pedido->comandas = $comandas;
+            $pedido->monto = $this->obtenerMontoPedido($comandas);
         }
         return $pedidos;
+    }
+
+    private function obtenerMontoPedido($comandas) {
+        $monto = 0;
+        foreach ($comandas as $comanda) {
+            $monto += $comanda->obtenerMonto();
+        }
+        return $monto;
     }
 }
