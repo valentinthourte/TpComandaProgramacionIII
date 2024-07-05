@@ -11,7 +11,13 @@ abstract class AService {
     protected function crearEntidad(IEntity $entidad) {
         $consulta = $this->accesoDatos->prepararConsulta($entidad->obtenerConsultaInsert());
         foreach($entidad->valoresInsert() as $key=>$value) {
-            $consulta->bindValue($key, $value, PDO::PARAM_STR);
+            try {
+
+                $consulta->bindValue($key, $value, PDO::PARAM_STR);
+            }
+            catch (Exception $ex) {
+                continue;
+            }
         }
         try {
             $consulta->execute();
@@ -25,6 +31,19 @@ abstract class AService {
                 throw $e;
         }
         return $this->accesoDatos->obtenerUltimoId();
+    }
+
+    protected function ejecutarConsultaBindeandoId($query, $id) {
+        $TEXTO_BINDEAR_ID = ":id";
+        if(str_contains($query, $TEXTO_BINDEAR_ID)) {
+            $consulta = $this->accesoDatos->prepararConsulta($query);
+            $consulta->bindValue($TEXTO_BINDEAR_ID, $id);
+            $consulta->execute();
+            return $consulta;
+        }
+        else {
+            throw new Exception("La entidad debe utilizar ':id' para bindear el ID." . PHP_EOL);
+        }
     }
 
 }

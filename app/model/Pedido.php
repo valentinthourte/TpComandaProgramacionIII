@@ -15,6 +15,7 @@ class Pedido implements IEntity {
     public $tiempoEstimadoPreparacion;
     public $codigoMesa;
     public $estadoPedido;
+    public $fechaHoraFinPreparacion;
     
     function __construct()
 	{
@@ -51,30 +52,83 @@ class Pedido implements IEntity {
         };
         // $this->estadoPedido = EstadoPedido::Pendiente;
     }
-
-    public static function generarNumeroPedido($tamaño) {
-        $numeroPedido = "";
-        $caracteres = "abcdefghijklmnopqrstuvwxyz0123456789";
-        for($i = 0; $i < $tamaño; $i++) {
-            $numeroPedido = $numeroPedido . substr(str_shuffle($caracteres), 0, 1);
-        }
-        return $numeroPedido;
-    }
     
     public function valoresInsert() {
-        return array(":numeroPedido"=>$this->numeroPedido, ":cliente"=>$this->cliente, ":fechaHoraInicioPreparacion"=>$this->fechaHoraInicioPreparacion, ":tiempoEstimadoPreparacion"=>$this->tiempoEstimadoPreparacion, ":codigoMesa"=>$this->codigoMesa, ":estadoPedido"=>$this->estadoPedido->value);
+        return array(":fechaHoraFinPreparacion"=>$this->fechaHoraFinPreparacion,":numeroPedido"=>$this->numeroPedido, ":cliente"=>$this->cliente, ":fechaHoraInicioPreparacion"=>$this->fechaHoraInicioPreparacion, ":tiempoEstimadoPreparacion"=>$this->tiempoEstimadoPreparacion, ":codigoMesa"=>$this->codigoMesa, ":estadoPedido"=>$this->estadoPedido->value);
     }
     
     public static function obtenerConsultaInsert() {
-        return "INSERT INTO Pedido(numeroPedido, cliente, fechaHoraInicioPreparacion, tiempoEstimadoPreparacion, codigoMesa, estadoPedido) VALUES (:numeroPedido,:cliente,:fechaHoraInicioPreparacion,:tiempoEstimadoPreparacion,:codigoMesa,:estadoPedido)";
+        return "INSERT INTO Pedido(numeroPedido, cliente, fechaHoraInicioPreparacion, tiempoEstimadoPreparacion, codigoMesa, estadoPedido, fechaHoraFinPreparacion) VALUES (:numeroPedido,:cliente,:fechaHoraInicioPreparacion,:tiempoEstimadoPreparacion,:codigoMesa,:estadoPedido, :fechaHoraFinPreparacion)";
     }
 
     public static function obtenerConsultaSelect() {
         return "SELECT * FROM Pedido";
     }
 
+    public static function obtenerConsultaSelectPorEstado() {
+        return Pedido::obtenerConsultaSelect() . " WHERE estadoPedido = :estado";
+    }
+
     public static function obtenerConsultaSelectPorId()
     {
         return Pedido::obtenerConsultaSelect() . " WHERE id = :id";
+    }
+
+    public static function obtenerConsultaDeletePorId() {
+        return "DELETE FROM Pedido WHERE id = :id";
+    }
+    public static function obtenerConsultaUpdateEstado() {
+        return "UPDATE Pedido SET estadoPedido = :estadoPedido, cliente = :cliente, fechaHoraFinPreparacion = :fechaHoraFinPreparacion where numeroPedido = :numeroPedido";
+    }
+
+    public function bindearValoresUpdateEstado($consulta) {
+        $consulta->bindValue(":estadoPedido", $this->estadoPedido->value);
+        $consulta->bindValue(":numeroPedido", $this->numeroPedido);
+        $consulta->bindValue(":cliente", $this->cliente);
+        $consulta->bindValue(":fechaHoraFinPreparacion", $this->fechaHoraFinPreparacion);
+
+        return $consulta;
+    }
+
+    public function puedeCambiarDeEstado($estadoPedido) {
+        if ($estadoPedido == EstadoPedido::ListoParaServir->value) {
+            return $this->comandasEstanListas();
+        }
+        else if (EstadoPedido::Servido) {
+            return $this->estadoPedido == EstadoPedido::ListoParaServir->value;
+        }
+        return $estadoPedido != $this->estadoPedido;
+    }
+
+    private function comandasEstanListas() {
+        return count(array_filter($this->comandas, function ($comanda) {
+            return $comanda->estadoComanda != EstadoComanda::Preparada->value;
+        })) == 0;
+    }
+    
+    public function actualizarEstado(EstadoPedido $estadoPedido) {
+        $this->estadoPedido = $estadoPedido;
+        if ($estadoPedido == EstadoPedido::Servido) {
+            $this->fechaHoraFinPreparacion = (new DateTime())->format('Y-m-d H:i:s');
+        }
+    }
+
+    public function toHTML(): string {
+        $comandasHtml = "";
+        foreach ($this->comandas as $comanda) {
+            $comandasHtml .= $comanda->toHTML();
+        }
+
+        return "
+        <p>- Número de Pedido: {$this->numeroPedido}</p>
+        <p>- Cliente: {$this->cliente}</p>
+        <p>- Fecha y Hora de Inicio de Preparación: {$this->fechaHoraInicioPreparacion}</p>
+        <p>- Tiempo Estimado de Preparación: {$this->tiempoEstimadoPreparacion}</p>
+        <p>- Código de Mesa: {$this->codigoMesa}</p>
+        <p>- Estado del Pedido: {$this->estadoPedido->value}</p>
+        <p>- Comandas: </p>
+        $comandasHtml
+        <p>--------------------</p>
+        ";
     }
 }

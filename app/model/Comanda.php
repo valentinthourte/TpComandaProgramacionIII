@@ -7,7 +7,7 @@ class Comanda implements IEntity {
     public $id;
     public $numeroPedido;
     public $estadoComanda;
-    public $tipoUsuarioPreparacionId;
+    public $usuarioPreparacionId;
     public $productos;
     public $tiempoPreparacionEstimado;
 
@@ -24,15 +24,20 @@ class Comanda implements IEntity {
 		}
 	}
 
-    public function __construct2($numeroPedido, $tipoUsuarioPreparacionId) {
+        public function __construct1($numeroPedido) {
         $this->numeroPedido = $numeroPedido;
-        $this->tipoUsuarioPreparacionId = $tipoUsuarioPreparacionId;
+        $this->usuarioPreparacionId = null;
+        $this->estadoComanda = EstadoComanda::Pendiente;
+    }
+    public function __construct2($numeroPedido, $usuarioPreparacionId) {
+        $this->numeroPedido = $numeroPedido;
+        $this->usuarioPreparacionId = $usuarioPreparacionId;
         $this->estadoComanda = EstadoComanda::Pendiente;
     }
 
-    public function __construct3($numeroPedido, $tipoUsuarioPreparacionId, $estadoComanda) {
+    public function __construct3($numeroPedido, $usuarioPreparacionId, $estadoComanda) {
         $this->numeroPedido = $numeroPedido;
-        $this->tipoUsuarioPreparacionId = $tipoUsuarioPreparacionId;
+        $this->usuarioPreparacionId = $usuarioPreparacionId;
         $this->estadoComanda = $estadoComanda;
     }
 
@@ -51,17 +56,25 @@ class Comanda implements IEntity {
     public function obtenerMonto() {
         $monto = 0;
         foreach($this->productos as $producto) {
-            $monto += $producto->precio;
+            $monto += $producto->precio * $producto->cantidad;
         }
         return $monto;
     }
 
+    public function puedeCambiarDeEstado($estado) {
+
+        return $estado != $this->estadoComanda;
+    }
+    public function actualizarEstado($estadoComanda) {
+        $this->estadoComanda = $estadoComanda;
+    }
+
     public static function obtenerConsultaInsert() {
-        return "INSERT INTO Comanda(numeroPedido, estadoComanda, tipoUsuarioPreparacionId) VALUES (:numeroPedido, :estadoComanda, :tipoUsuarioPreparacionId)";
+        return "INSERT INTO Comanda(numeroPedido, estadoComanda, usuarioPreparacionId) VALUES (:numeroPedido, :estadoComanda, :usuarioPreparacionId)";
     }
 
     public function valoresInsert() {
-        return array(":numeroPedido" => $this->numeroPedido, ":estadoComanda"=>$this->estadoComanda->value, ":tipoUsuarioPreparacionId"=>$this->tipoUsuarioPreparacionId);
+        return array(":numeroPedido" => $this->numeroPedido, ":estadoComanda"=>$this->estadoComanda->value, ":usuarioPreparacionId"=>$this->usuarioPreparacionId);
     }
 
     public static function obtenerConsultaSelect()
@@ -76,6 +89,40 @@ class Comanda implements IEntity {
     public static function obtenerConsultaSelectPorNumeroPedido() {
         return Comanda::obtenerConsultaSelect() . " WHERE numeroPedido = :x";
     }
+    public static function obtenerConsultaUpdateEstado() {
+        return "UPDATE Comanda SET estadoComanda = :estadoComanda WHERE id = :id";
+    }
 
+    public static function obtenerConsultaUpdate() {
+        return "UPDATE Comanda SET estadoComanda = :estadoComanda, usuarioPreparacionId = :usuarioPreparacionId where id = :id";
+    }
 
+    public function bindearValoresUpdateEstado($consulta) {
+        $consulta->bindValue(":estadoComanda", $this->estadoComanda->value);
+        $consulta->bindValue(":usuarioPreparacionId", $this->usuarioPreparacionId);
+        $consulta->bindValue(":id", $this->id);
+
+        return $consulta;
+    }
+    public static function obtenerConsultaDeletePorId() {
+        return "DELETE FROM Comanda WHERE id = :id";
+    }
+
+    public function toHTML(): string {
+        $productosHtml = "";
+        foreach ($this->productos as $producto) {
+            $productosHtml .= $producto->toHTML();
+        }
+
+        $indent = str_repeat('&nbsp;', 8);
+        return "
+        <p>{$indent}- ID Comanda: {$this->id}</p>
+        <p>{$indent}- Número de Pedido: {$this->numeroPedido}</p>
+        <p>{$indent}- Estado Comanda: {$this->estadoComanda}</p>
+        <p>{$indent}- Usuario Preparación Id: {$this->usuarioPreparacionId}</p>
+        <p>{$indent}- Tiempo Preparación Estimado: {$this->tiempoPreparacionEstimado}</p>
+        <p>{$indent}- Productos: </p>
+        $productosHtml
+        ";
+    }
 }

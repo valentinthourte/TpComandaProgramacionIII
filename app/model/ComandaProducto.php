@@ -42,4 +42,8 @@ class ComandaProducto implements IEntity {
         return ComandaProducto::obtenerConsultaSelect() . " WHERE comandaId = :comandaId AND productoId = :productoId";
     }
 
+    public static function obtenerConsultaDeletePorId() {
+        return "DELETE FROM ComandaProducto WHERE id = :id";
+    }
+
 }
