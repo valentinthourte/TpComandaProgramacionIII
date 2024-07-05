@@ -133,6 +133,9 @@ $app->group('/reportes', function (RouteCollectorProxy $group) {
   $group->get('/pedidos/porUsuario/{id}', \ReportesController::class . ':pedidosPorUsuario')
   ->add(new MAutenticacionTipoUsuario(array("socio")));
   
+  $group->get('/pedidos/cantidadPorUsuario/{id}', \ReportesController::class . ':cantidadPedidosPorUsuario')
+  ->add(new MAutenticacionTipoUsuario(array("socio")));
+  
   $group->get('/mesas/masUsada', \ReportesController::class . ':mesaMasUsada')
   ->add(new MAutenticacionTipoUsuario(array("socio")));
 
