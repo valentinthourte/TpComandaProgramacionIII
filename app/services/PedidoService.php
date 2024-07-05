@@ -12,11 +12,13 @@ class PedidoService extends AService {
     private $LONGITUD_NUMERO_PEDIDO = 5;
     private ComandaService $comandaService;
     private ProductoService $productoService;
+    private MesaService $mesaService;
 
     public function __construct() {
         parent::__construct();
         $this->comandaService = new ComandaService();
         $this->productoService = new ProductoService();
+        $this->mesaService = new MesaService();
     }
 
     public function crearPedido($parametros) {
@@ -125,6 +127,39 @@ class PedidoService extends AService {
 
         return $this->completarInfoPedidos($pedidos);;
     }
+
+
+    public function obtenerPedidosPorUsuario($id) {
+        if (empty($id)) {
+            throw new Exception("El id no fue enviado.");
+        }
+        $query = "SELECT distinct p.id, p.* FROM Pedido p join comanda c on c.numeroPedido = p.numeroPedido where c.usuarioPreparacionId = :id";
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->bindValue(":id", $id);
+        $consulta->execute();
+        
+        $pedidos = $consulta->fetchAll(PDO::FETCH_CLASS, Pedido::class);
+
+        return $this->completarInfoPedidos($pedidos);
+
+    }
+
+    public function obtenerMesaMasUsada(){
+        $query = "SELECT p.codigoMesa, COUNT(p.codigoMesa) AS cantidadPedidos FROM Pedido p JOIN Mesa m ON p.codigoMesa = m.numeroMesa GROUP BY p.codigoMesa ORDER BY cantidadPedidos DESC LIMIT 1";
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->execute();
+        $datos = $consulta->fetch(PDO::FETCH_ASSOC);
+        return array("mesa"=>$this->mesaService->leerMesaPorNumero($datos['codigoMesa']), "cantidadPedidos"=>$datos['cantidadPedidos']);
+    }
+    public function obtenerPedidosDemorados() {
+        $query = "SELECT * FROM pedido WHERE DATE_ADD(fechaHoraInicioPreparacion, INTERVAL tiempoEstimadoPreparacion MINUTE) < fechaHoraFinPreparacion";
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->execute();
+        $pedidos = $consulta->fetchAll(PDO::FETCH_CLASS, Pedido::class);
+
+        return $this->completarInfoPedidos($pedidos);
+    }
+
     public function exportarPdfPorFecha($fechaDesde, $fechaHasta) {
         
         $pedidos = $this->leerPedidosPorFecha($fechaDesde, $fechaHasta);

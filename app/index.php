@@ -10,6 +10,7 @@ require_once("controllers/ProductoController.php");
 require_once("controllers/PedidoController.php");
 require_once("controllers/MesaController.php");
 require_once("controllers/ComandaController.php");
+require_once("controllers/ReportesController.php");
 require_once("controllers/LoginController.php");
 
 require_once("middlewares/MAutenticacionTipoUsuario.php");
@@ -125,20 +126,15 @@ $app->group('/mesas', function (RouteCollectorProxy $group) {
 })->add(new MValidacionToken());
 
 $app->group('/reportes', function (RouteCollectorProxy $group) {
-  $group->get('[/]', \MesaController::class . ':leerTodos')
-  ->add(new MAutenticacionTipoUsuario(array("mozo","cocinero", "cervecero", "bartender", "pastelero", "socio")));
+  
+  $group->get('/pedidos/pedidosDemorados', \ReportesController::class . ':pedidosDemorados')
+  ->add(new MAutenticacionTipoUsuario(array("socio")));
 
-  $group->get('/{numeroMesa}', \MesaController::class . ':leerUno')
-  ->add(new MAutenticacionTipoUsuario(array("mozo","cocinero", "cervecero", "bartender", "pastelero", "socio")));
-
-  $group->post('[/]', \MesaController::class . ':crearUno')
-  ->add(new MAutenticacionTipoUsuario(array("mozo","cocinero", "cervecero", "bartender", "pastelero", "socio")));
-
-  $group->put('/{numeroMesa}', \MesaController::class . ":actualizar")
-  ->add(new MAutenticacionTipoUsuario(array("mozo", "socio")));
-
-  $group->delete('/{numeroMesa}', \MesaController::class . ":eliminar")
-  ->add(new MAutenticacionTipoUsuario(array("mozo", "socio")));
+  $group->get('/pedidos/porUsuario/{id}', \ReportesController::class . ':pedidosPorUsuario')
+  ->add(new MAutenticacionTipoUsuario(array("socio")));
+  
+  $group->get('/mesas/masUsada', \ReportesController::class . ':mesaMasUsada')
+  ->add(new MAutenticacionTipoUsuario(array("socio")));
 
 })->add(new MValidacionToken());
 
