@@ -3,6 +3,7 @@
 abstract class AController {
     protected function setearResponse($response, $content, $contentType = 'application/json') {
         $response->getBody()->write($content);
+
         return $response
             ->withHeader('Content-Type', $contentType);
     }

@@ -43,6 +43,10 @@ class Mesa implements IEntity {
         return Mesa::obtenerConsultaSelect() . " WHERE id = :id";
 
     }
+
+    public function obtenerNombreImagen() {
+        return "Mesa-" . $this->numeroMesa;
+    }
     
     public static function obtenerConsultaDeletePorId() {
         return "DELETE FROM Mesa WHERE numeroMesa = :numeroMesa";

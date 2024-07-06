@@ -20,5 +20,4 @@ class LoginController extends AController {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
-
 }

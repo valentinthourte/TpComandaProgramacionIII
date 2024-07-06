@@ -14,7 +14,6 @@ class PedidoController extends AController {
     public function crearUno($request, $response, $args) {
         $parametros = $request->getParsedBody();
         try {
-
             $numeroPedido = $this->pedidoService->crearPedido($parametros);
             $content = json_encode(array("mensaje"=>"Pedido creado con éxito.", "NumeroPedido"=>$numeroPedido));
 
@@ -24,11 +23,25 @@ class PedidoController extends AController {
             return $this->setearResponseError($response, $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 400);
         }
     }
+
     public function leerTodos($request, $response, $args) {
         try {
             $estado = $request->getQueryParams()['estado'];
             $pedidos = $this->pedidoService->leerPedidos($estado);
             $content = json_encode($pedidos);
+            return $this->setearResponse($response, $content);
+        }
+        catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+    }
+
+    public function tiempoRestantePedido($request, $response, $args) {
+        try {
+            $parametros = $request->getQueryParams();
+            $numeroPedido = $args['numeroPedido'];
+            $numeroMesa = $parametros['numeroMesa'];
+            $content = json_encode(array("tiempo restante"=>$this->pedidoService->tiempoPorNumeroyMesa($numeroPedido, $numeroMesa)));
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
@@ -74,8 +87,17 @@ class PedidoController extends AController {
         }
     }
 
-    public function eliminar($request, $response, $args) {
-
+    public function agregarImagen($request, $response, $args) {
+        try {
+            $imagen = $request->getUploadedFiles()['imagen'];
+            $mensaje = $this->pedidoService->asociarImagenAPedido($args['numeroPedido'], $imagen);
+            $content = json_encode(array("mensaje" => $mensaje));
+            return $this->setearResponse($response, $content);
+        }
+        catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
+
 
 }

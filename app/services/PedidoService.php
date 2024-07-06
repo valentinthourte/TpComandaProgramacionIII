@@ -41,6 +41,28 @@ class PedidoService extends AService {
         }
     }
 
+    public function asociarImagenAPedido($numeroPedido, $imagen) {
+        if (!$imagen) {
+            throw new Exception("La imagen no fue proporcionada.");
+        }
+        $pedido = $this->obtenerPedidoPorNumero($numeroPedido);
+        if (!$pedido) {
+            throw new Exception("No existe pedido con ese numero. ");
+        }
+
+        $ruta = $this->subirImagenDeEntidad($pedido, $imagen);
+        $pedido->asignarImagen($ruta);
+
+        $query = Pedido::obtenerConsultaUpdateImagen();
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->bindValue(":numeroPedido", $numeroPedido);
+        $consulta->bindValue(":rutaImagen", $ruta);
+
+        $consulta->execute();
+
+        return $pedido;
+    }
+
     public function leerPedidos($estado = "") {
         $query = empty($estado) ? Pedido::obtenerConsultaSelect() : Pedido::obtenerConsultaSelectPorEstado();
         $consulta = $this->accesoDatos->prepararConsulta($query);
@@ -70,6 +92,20 @@ class PedidoService extends AService {
         return $monto;
     }
 
+    public function tiempoPorNumeroyMesa($numeroPedido, $numeroMesa) {
+        $query = "SELECT tiempoEstimadoPreparacion from Pedido where codigoMesa = :numeroMesa and numeroPedido = :numeroPedido";
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->bindValue(":numeroPedido", $numeroPedido);
+        $consulta->bindValue(":numeroMesa", $numeroMesa);
+
+        $consulta->execute();
+        $tiempoEstimado = $consulta->fetch(PDO::FETCH_ASSOC)['tiempoEstimadoPreparacion'];
+        if (!isset($tiempoEstimado)) {
+            throw new Exception("No existe pedido con ese codigo para esa mesa. ");
+        }
+        
+        return (string)$tiempoEstimado;
+    }
     public function actualizarEstadoPedido($numeroPedido, $estado) {
         $pedido = $this->obtenerPedidoPorNumero($numeroPedido);
 

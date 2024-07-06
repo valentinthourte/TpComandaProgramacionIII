@@ -72,6 +72,9 @@ class Usuario implements IEntity, JsonSerializable {
     public function obtenerId() {
         return $this->id;
     }
+    public function obtenerNombreImagen() {
+        return "Usuario-" . $this->nombre;
+    }
     public function obtenerIdTipoUsuarioPorNombre($nombre) {
         $accesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $accesoDatos->prepararConsulta("SELECT id FROM TipoUsuario WHERE tipo = :tipo");

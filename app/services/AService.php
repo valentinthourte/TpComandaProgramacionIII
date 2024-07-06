@@ -4,6 +4,8 @@ require_once("../db/AccesoDatos.php");
 
 abstract class AService {
     protected AccesoDatos $accesoDatos;
+    
+    private $directorioImagenes = "/ImagenesDe@/2024/";
     public function __construct() {
         $this->accesoDatos = AccesoDatos::obtenerInstancia();
     }
@@ -31,6 +33,36 @@ abstract class AService {
                 throw $e;
         }
         return $this->accesoDatos->obtenerUltimoId();
+    }
+
+    protected function subirImagenDeEntidad(IEntity $entidad, $imagen) {
+        try {
+            if ($imagen->getError() == UPLOAD_ERR_OK) {
+                $rutaCompleta = $this->obtenerRutaImagenParaEntidad($entidad, $imagen);
+                if(!file_exists(dirname($rutaCompleta))) {
+                    mkdir(dirname($rutaCompleta), 0777, true);
+                }
+                $imagen->moveTo($rutaCompleta);
+                return $rutaCompleta;
+            }
+            else {
+                throw new Exception($imagen->getError());
+            }
+        }
+        catch (Exception $ex) {
+            echo "No se pudo subir la imagen: " . $ex->getMessage();
+        }
+    }
+
+    protected function obtenerRutaImagenParaEntidad(IEntity $entidad, $imagen) {
+        if ($imagen->getError() == UPLOAD_ERR_OK) {
+            $nombre = str_replace(" ", "", $entidad->obtenerNombreImagen());
+            $extension = pathinfo($imagen->getClientFilename(), PATHINFO_EXTENSION);
+            $directorio = getcwd() . str_replace("@", $entidad::class,$this->directorioImagenes);
+            $rutaCompleta = $directorio . $nombre . "." . $extension;
+        }
+
+        return $rutaCompleta;
     }
 
     protected function ejecutarConsultaBindeandoId($query, $id) {

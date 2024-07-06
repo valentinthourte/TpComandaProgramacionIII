@@ -16,6 +16,7 @@ class Pedido implements IEntity {
     public $codigoMesa;
     public $estadoPedido;
     public $fechaHoraFinPreparacion;
+    public $rutaImagen;
     
     function __construct()
 	{
@@ -37,6 +38,7 @@ class Pedido implements IEntity {
         $this->tiempoEstimadoPreparacion = $tiempoEstimadoPreparacion;
         $this->codigoMesa = $codigoMesa;
         $this->estadoPedido = EstadoPedido::Pendiente;
+        $this->rutaImagen = null;
     }
 
     public function __construct6($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $tiempoEstimadoPreparacion, $codigoMesa, $estadoPedido) {
@@ -50,6 +52,7 @@ class Pedido implements IEntity {
             "EnPreparacion" => EstadoPedido::EnPreparacion,
             "ListoParaServir" => EstadoPedido::ListoParaServir
         };
+        $this->rutaImagen = null;
         // $this->estadoPedido = EstadoPedido::Pendiente;
     }
     
@@ -81,6 +84,14 @@ class Pedido implements IEntity {
         return "UPDATE Pedido SET estadoPedido = :estadoPedido, cliente = :cliente, fechaHoraFinPreparacion = :fechaHoraFinPreparacion where numeroPedido = :numeroPedido";
     }
 
+    public function asignarImagen($ruta) {
+        $this->rutaImagen = $ruta;
+    }
+
+    public function obtenerNombreImagen() {
+        return "Pedido-" . $this->numeroPedido;
+    }
+
     public function bindearValoresUpdateEstado($consulta) {
         $consulta->bindValue(":estadoPedido", $this->estadoPedido->value);
         $consulta->bindValue(":numeroPedido", $this->numeroPedido);
@@ -88,6 +99,10 @@ class Pedido implements IEntity {
         $consulta->bindValue(":fechaHoraFinPreparacion", $this->fechaHoraFinPreparacion);
 
         return $consulta;
+    }
+
+    public static function obtenerConsultaUpdateImagen() {
+        return "UPDATE Pedido SET rutaImagen = :rutaImagen where numeroPedido = :numeroPedido";
     }
 
     public function puedeCambiarDeEstado($estadoPedido) {

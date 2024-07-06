@@ -26,6 +26,11 @@ class ComandaProducto implements IEntity {
     public static function obtenerConsultaInsert() {
         return "INSERT INTO ComandaProducto(comandaId, productoId) VALUES (:comandaId, :productoId)";
     } 
+
+    public function obtenerNombreImagen() {
+        return "ComandaProducto-" . $this->comandaId . $this->productoId;
+    }
+    
     public static function obtenerConsultaSelect()
     {
         return "SELECT * FROM ComandaProducto";

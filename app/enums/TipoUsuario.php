@@ -7,6 +7,7 @@ enum TipoUsuario: int {
     case Bartender = 4;
     case Cocinero = 5;
     case Pastelero = 6;
+    case Cliente = 7;
 
     public function getNombre(): string {
         return match($this) {
@@ -16,6 +17,7 @@ enum TipoUsuario: int {
             self::Bartender => 'bartender',
             self::Cocinero => 'cocinero',
             self::Pastelero => 'pastelero',
+            self::Cliente => 'cliente'
         };
     }
 }

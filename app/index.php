@@ -83,9 +83,15 @@ $app->group('/pedidos', function (RouteCollectorProxy $group) {
   ->add(new MAutenticacionTipoUsuario(array("socio")));
 
   $group->post('[/]', \PedidoController::class . ':crearUno')
-  ->add(new MAutenticacionTipoUsuario(array("cocinero","socio", "cervecero", "bartender", "pastelero")));
+  ->add(new MAutenticacionTipoUsuario(array("mozo","cocinero","socio", "cervecero", "bartender", "pastelero")));
+
+  $group->get('/tiempoRestante/{numeroPedido}', \PedidoController::class . ':tiempoRestantePedido')
+  ->add(new MAutenticacionTipoUsuario(array("cocinero","socio", "cervecero", "bartender", "pastelero", "cliente")));
 
   $group->put('/{numeroPedido}', \PedidoController::class . ':actualizar')
+  ->add(new MAutenticacionTipoUsuario(array("mozo", "socio")));
+
+  $group->post('/agregarImagen/{numeroPedido}', \PedidoController::class . ':agregarImagen')
   ->add(new MAutenticacionTipoUsuario(array("mozo", "socio")));
 
 })->add(new MValidacionToken());

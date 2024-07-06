@@ -53,6 +53,10 @@ class Comanda implements IEntity {
         $this->productos = $productos;
     }
 
+    public function obtenerNombreImagen() {
+        return "Comanda-" . $this->id;
+    }
+
     public function obtenerMonto() {
         $monto = 0;
         foreach($this->productos as $producto) {

@@ -95,6 +95,10 @@ class Producto implements IEntity {
         return "DELETE FROM Producto WHERE id = :id";
     }
 
+    public function obtenerNombreImagen() {
+        return "Producto-" . $this->nombre;
+    }
+    
     public function toHTML(): string {
         $indent = str_repeat('&nbsp;', 16);
         return "

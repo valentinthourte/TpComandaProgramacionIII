@@ -6,5 +6,6 @@ interface IEntity {
     public static function obtenerConsultaSelect();
     public static function obtenerConsultaSelectPorId();
     public static function obtenerConsultaDeletePorId();
+    public function obtenerNombreImagen();
 
 } 
