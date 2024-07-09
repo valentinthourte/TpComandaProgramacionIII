@@ -83,7 +83,7 @@ $app->group('/pedidos', function (RouteCollectorProxy $group) {
   ->add(new MAutenticacionTipoUsuario(array("socio")));
 
   $group->post('[/]', \PedidoController::class . ':crearUno')
-  ->add(new MAutenticacionTipoUsuario(array("mozo","cocinero","socio", "cervecero", "bartender", "pastelero")));
+  ->add(new MAutenticacionTipoUsuario(array("mozo","socio")));
 
   $group->get('/tiempoRestante/{numeroPedido}', \PedidoController::class . ':tiempoRestantePedido')
   ->add(new MAutenticacionTipoUsuario(array("cocinero","socio", "cervecero", "bartender", "pastelero", "cliente")));
@@ -124,6 +124,9 @@ $app->group('/mesas', function (RouteCollectorProxy $group) {
   ->add(new MAutenticacionTipoUsuario(array("mozo","cocinero", "cervecero", "bartender", "pastelero", "socio")));
 
   $group->put('/{numeroMesa}', \MesaController::class . ":actualizar")
+  ->add(new MAutenticacionTipoUsuario(array("mozo", "socio")));
+
+  $group->put('/cobrarCuenta/{numeroMesa}', \MesaController::class . ":cobrarCuenta")
   ->add(new MAutenticacionTipoUsuario(array("mozo", "socio")));
 
   $group->delete('/{numeroMesa}', \MesaController::class . ":eliminar")

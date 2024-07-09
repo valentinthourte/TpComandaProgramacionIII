@@ -107,6 +107,15 @@ class ProductoService extends AService {
         return $nombreArchivo;
     }
 
+    public function obtenerProductosPorId($productosIds) {
+        $ids = implode(",", $productosIds);
+        $query = "SELECT * FROM Producto WHERE id in ({$ids})";
+
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->execute();
+        return $consulta->fetchAll(PDO::FETCH_CLASS, Producto::class);
+    }
+
     public function actualizarProducto($id, $parametros) {
         $producto = $this->validarProductoExiste($id);
 

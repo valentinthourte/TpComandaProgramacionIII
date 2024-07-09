@@ -12,10 +12,12 @@ class ComandaService extends AService {
         parent::__construct();
         $this->productoService = new ProductoService();
     }
-    public function crearComandasDePedido($numeroPedido, $productosAgrupados) {
+    public function crearComandasDePedido($numeroPedido, $productosIds) {
         $comandas = array();
         $comandasProductos = array();
-        foreach($productosAgrupados as $sector=>$productos) {
+        $listaProductos = $this->productoService->obtenerProductosPorId($productosIds);
+        $listaAgrupada = ArrayHelper::groupBy($listaProductos, Producto::PropiedadAgrupacion());
+        foreach($listaAgrupada as $tipoUsuarioId=>$productos) {
             $comanda = new Comanda($numeroPedido);
             $comanda->asignarProductos($productos);
             $comanda = $this->guardarComanda($comanda);

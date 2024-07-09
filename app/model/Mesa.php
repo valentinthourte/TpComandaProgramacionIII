@@ -25,10 +25,32 @@ class Mesa implements IEntity {
         $this->numeroMesa = $numeroMesa;
         $this->estado = EstadoMesa::Cerrada;
     }    
+    
     public function __construct2($numeroMesa, $estado) {
         $this->numeroMesa = $numeroMesa;
         $this->estado = $estado;
     }    
+
+    public function puedeIniciarPedido() {
+        return $this->estaEnEstado(EstadoMesa::Cerrada);
+    }
+
+    public function puedeCobrarCuenta() {
+        return $this->estaEnEstado(EstadoMesa::ConClienteComiendo);
+    }
+
+    public function sePuedeServirPedido() {
+        return $this->estaEnEstado(EstadoMesa::ConClienteEsperandoPedido);
+    }
+
+    public function puedeCerrarse() {
+        return $this->estaEnEstado(EstadoMesa::ConClientePagando);
+    }
+
+    private function estaEnEstado($estado) {
+        $estadoMesa = gettype($this->estado) == "string" ? EstadoMesa::from($this->estado) : $this->estado;
+        return $estadoMesa == $estado;
+    }
     
     public function valoresInsert() {
         return array(":numeroMesa"=>$this->numeroMesa, ":estado"=>$this->estado->value);

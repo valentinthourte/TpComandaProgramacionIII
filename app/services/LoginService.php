@@ -12,7 +12,7 @@ class LoginService extends AService {
         $usuario = $this->obtenerUsuario($nombreUsuario, $clave);
 
         if ($usuario) {
-            $this->registrarLoginUsuario($usuario->obtenerId());
+            // $this->registrarLoginUsuario($usuario->obtenerId());
             return $this->generarToken($usuario->obtenerTipoUsuario(), $usuario->obtenerId());
         }
         else {

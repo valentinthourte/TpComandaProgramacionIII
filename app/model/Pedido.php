@@ -31,21 +31,19 @@ class Pedido implements IEntity {
 		}
 	}
 
-    public function __construct5($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $tiempoEstimadoPreparacion, $codigoMesa) {
+    public function __construct4($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa) {
         $this->numeroPedido = $numeroPedido;
         $this->cliente = $cliente;
         $this->fechaHoraInicioPreparacion = $fechaHoraInicioPreparacion;
-        $this->tiempoEstimadoPreparacion = $tiempoEstimadoPreparacion;
         $this->codigoMesa = $codigoMesa;
         $this->estadoPedido = EstadoPedido::Pendiente;
         $this->rutaImagen = null;
     }
 
-    public function __construct6($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $tiempoEstimadoPreparacion, $codigoMesa, $estadoPedido) {
+    public function __construct5($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa, $estadoPedido) {
         $this->numeroPedido = $numeroPedido;
         $this->cliente = $cliente;
         $this->fechaHoraInicioPreparacion = $fechaHoraInicioPreparacion;
-        $this->tiempoEstimadoPreparacion = $tiempoEstimadoPreparacion;
         $this->codigoMesa = $codigoMesa;
         $this->estadoPedido = match ($estadoPedido) {
             "Pendiente" => EstadoPedido::Pendiente,
@@ -105,17 +103,35 @@ class Pedido implements IEntity {
         return "UPDATE Pedido SET rutaImagen = :rutaImagen where numeroPedido = :numeroPedido";
     }
 
-    public function puedeCambiarDeEstado($estadoPedido) {
-        if ($estadoPedido == EstadoPedido::ListoParaServir->value) {
-            return $this->comandasEstanListas();
+    public function validarCambioEstado($estadoPedido) {
+        switch ($estadoPedido) {
+            case EstadoPedido::Pendiente:
+                throw new Exception("No se puede asignar estado Pendiente al pedido.");
+            case EstadoPedido::EnPreparacion:
+                if ($this->estadoPedido != EstadoPedido::Pendiente) {
+                    throw new Exception("El pedido debe estar Pendiente para ponerlo en preparación.");
+                }
+                break;
+            case EstadoPedido::ListoParaServir:
+                if ($this->estadoPedido != EstadoPedido::EnPreparacion) {
+                    throw new Exception("El pedido debe estar En Preparacion para designarlo Listo para servir.");
+                }
+                if (!$this->comandasEstanListas()) {
+                    throw new Exception("El pedido no se puede servir: Las comandas no estan listas. ");
+                }
+                break;
+            case EstadoPedido::Servido:
+                if ($this->estadoPedido != EstadoPedido::EnPreparacion) {
+                    throw new Exception("El pedido debe estar En Preparacion para designarlo Listo para servir.");
+                }
+                break;
+            case EstadoPedido::Anulado:
+            default:
+                break;
         }
-        else if (EstadoPedido::Servido) {
-            return $this->estadoPedido == EstadoPedido::ListoParaServir->value;
-        }
-        return $estadoPedido != $this->estadoPedido;
     }
 
-    private function comandasEstanListas() {
+    public function comandasEstanListas() {
         return count(array_filter($this->comandas, function ($comanda) {
             return $comanda->estadoComanda != EstadoComanda::Preparada->value;
         })) == 0;

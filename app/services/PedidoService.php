@@ -24,20 +24,24 @@ class PedidoService extends AService {
     public function crearPedido($parametros) {
         $this->validarDatosPedido($parametros);
         $numeroPedido = IdHelper::generarNumeroAlfanumerico($this->LONGITUD_NUMERO_PEDIDO);
-        $listaProductos = $this->productoService->parsearProductos(json_decode($parametros["productos"]));
         $cliente = $parametros["cliente"]; 
-        $listaAgrupada = ArrayHelper::groupBy($listaProductos, Producto::PropiedadAgrupacion()); 
         $fechaHoraInicioPreparacion = empty($parametros["fechaHoraInicioPreparacion"]) ? date('Y-m-d H:i:s') : $parametros["fechaHoraInicioPreparacion"];
-        $tiempoPreparacion = ArrayHelper::encontrarMaximoPorPropiedad($listaProductos, "tiempoPreparacionBase")->tiempoPreparacionBase;
-        $pedido = new Pedido($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $tiempoPreparacion, $parametros["codigoMesa"]);
+        $codigoMesa = $parametros["codigoMesa"];
+        $pedido = new Pedido($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa);
         $this->crearEntidad($pedido);
-        $this->comandaService->crearComandasDePedido($numeroPedido, $listaAgrupada);
+        $this->comandaService->crearComandasDePedido($pedido->numeroPedido, $parametros["productos"]);
+        $this->mesaService->actualizarMesa($codigoMesa, EstadoMesa::ConClienteEsperandoPedido);
         return $numeroPedido;
     }
+
 
     private function validarDatosPedido($datos) {
         if (empty($datos["cliente"]) || empty($datos["productos"])) {
             throw new InvalidArgumentException("El cliente o los productos recibidos no son válidos. ");
+        }
+        $mesa = $this->mesaService->obtenerMesaPorNumero($datos['codigoMesa']);
+        if (!$mesa->puedeIniciarPedido()) {
+            throw new Exception("El estado de la mesa no permite iniciar un pedido. ");
         }
     }
 
@@ -114,15 +118,13 @@ class PedidoService extends AService {
         }
         try {
             $estadoPedido = EstadoPedido::from($estado);
-            if ($pedido->puedeCambiarDeEstado($estado)) {
-                $pedido->actualizarEstado($estadoPedido);
-                $this->actualizarPedido($pedido);
-                return $pedido;
+            $pedido->validarCambioEstado($estadoPedido);
+            if ($estadoPedido == EstadoPedido::Servido) {
+                $this->mesaService->actualizarMesa($pedido->codigoMesa, EstadoMesa::ConClienteComiendo);
             }
-            else {
-                throw new Exception("El estado debe ser diferente al actual o las comandas no estan listas.");
-            }
-            
+            $pedido->actualizarEstado($estadoPedido);
+            $this->actualizarPedido($pedido);
+            return $pedido;
         }
         catch (ValueError $ex) {
             throw new Exception("El estado enviado no es válido: " . $estado, 404, $ex);
@@ -151,6 +153,13 @@ class PedidoService extends AService {
         $pedido->monto = $this->obtenerMontoPedido($comandas);
 
         return $pedido;
+    }
+
+    public function verificarEstadoPorComandas($numeroPedido) {
+        $pedido = $this->obtenerPedidoPorNumero($numeroPedido);
+        if ($pedido->comandasEstanListas()) {
+            $this->actualizarEstadoPedido($numeroPedido, EstadoPedido::ListoParaServir);
+        }
     }
 
     public function leerPedidosPorFecha($fechaDesde, $fechaHasta) {

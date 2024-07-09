@@ -22,7 +22,7 @@ class MesaService extends AService {
         return $consulta->fetchAll(PDO::FETCH_CLASS, Mesa::class);
     }
 
-    public function leerMesaPorNumero($numeroMesa) {
+    public function leerMesaPorNumero($numeroMesa): Mesa {
         $query = "SELECT * FROM Mesa WHERE numeroMesa = :numeroMesa";
         $consulta = $this->accesoDatos->prepararConsulta($query);
         $consulta->bindValue(":numeroMesa", $numeroMesa);
@@ -47,17 +47,59 @@ class MesaService extends AService {
         } 
     }
 
+    public function obtenerMesaPorNumero($codigoMesa): Mesa {
+        $mesa = $this->leerMesaPorNumero($codigoMesa);
+        return $mesa;
+    }
+
     public function actualizarMesa($numeroMesa, $estado,$tipoUsuario = TipoUsuario::Socio) {
-        if ($estado == EstadoMesa::Cerrada->value && $tipoUsuario == TipoUsuario::Mozo) {
-            throw new Exception("Solo un socio puede marcar la mesa como cerrada.");
+        $mesa = $this->leerMesaPorNumero($numeroMesa);
+        $mensaje = "";
+        switch($estado) {
+            case EstadoMesa::ConClienteEsperandoPedido:
+                if (!$mesa->puedeIniciarPedido()) {
+                    $mensaje = "La mesa debe estar cerrada para iniciar un pedido.";
+                }
+                break;
+            case EstadoMesa::ConClienteComiendo:
+                if (!$mesa->sePuedeServirPedido()) {
+                    $mensaje = "El cliente debe estar esperando su pedido para servirlo.";
+                }
+                break;
+            case EstadoMesa::ConClientePagando:
+                if (!$mesa->puedeCobrarCuenta()) {
+                    $mensaje = "El cliente debe estar comiendo para cobrar la cuenta. ";
+                }
+                break;
+            case EstadoMesa::Cerrada:
+                if (!$mesa->puedeCerrarse()) {
+                    $mensaje = "La mesa no puede cerrarse. ";
+                }
+                break;
+            case EstadoMesa::Baja:
+                
+                break;
+        }
+        if ($mensaje != "") {
+            throw new Exception($mensaje);
         }
         $query = "UPDATE Mesa SET estado = :estado where numeroMesa = :numeroMesa";
         $consulta = $this->accesoDatos->prepararConsulta($query);
-        $consulta->bindValue(":estado", $estado);
+        $consulta->bindValue(":estado", gettype($estado) != "string" ? $estado->value : $estado);
         $consulta->bindValue(":numeroMesa", $numeroMesa);
         $consulta->execute();
 
         return $this->leerMesaPorNumero($numeroMesa);
+    }
+
+    public function cobrarCuentaDeMesa($codigoMesa) {
+        $mesa = $this->obtenerMesaPorNumero($codigoMesa);
+        if ($mesa->puedeCobrarCuenta()) {
+            $this->actualizarMesa($codigoMesa, EstadoMesa::ConClientePagando);
+        }
+        else {
+            throw new Exception("La mesa no esta en el estado correcto para cobrar la cuenta. ");
+        }
     }
 
 }

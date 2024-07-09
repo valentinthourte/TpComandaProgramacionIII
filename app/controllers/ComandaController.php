@@ -5,9 +5,11 @@ require_once("services/ComandaService.php");
 
 class ComandaController extends AController   {
     private $comandaService;
+    private $pedidoService;
 
     public function __construct() {
         $this->comandaService = new ComandaService();
+        $this->pedidoService = new PedidoService();
     }
 
     public function leerTodos($request, $response, $args) {
@@ -41,6 +43,9 @@ class ComandaController extends AController   {
             $tiempoEstimado = $parametros['tiempoEstimado'];
 
             $comanda = $this->comandaService->actualizarEstadoComanda($numeroPedido, $tipoUsuario, $usuarioId, $estado, $tiempoEstimado);
+            if ($estado == EstadoComanda::Preparada) {
+                $this->pedidoService->verificarEstadoPorComandas($numeroPedido);
+            }
             $content = json_encode($comanda);
             return $this->setearResponse($response, $content);
         }
