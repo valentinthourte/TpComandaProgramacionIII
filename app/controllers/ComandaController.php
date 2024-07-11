@@ -40,10 +40,10 @@ class ComandaController extends AController   {
             $tipoUsuario = $request->getAttribute("tipoUsuario");
             $usuarioId = $request->getAttribute("usuarioId");
             $estado = $parametros['estado'];
-            $tiempoEstimado = $parametros['tiempoEstimado'];
 
-            $comanda = $this->comandaService->actualizarEstadoComanda($numeroPedido, $tipoUsuario, $usuarioId, $estado, $tiempoEstimado);
+            $comanda = $this->comandaService->actualizarEstadoComanda($numeroPedido, $tipoUsuario, $usuarioId, $estado, $parametros);
             if ($estado == EstadoComanda::Preparada) {
+                echo "Verificando estado por comandas." . PHP_EOL;
                 $this->pedidoService->verificarEstadoPorComandas($numeroPedido);
             }
             $content = json_encode($comanda);

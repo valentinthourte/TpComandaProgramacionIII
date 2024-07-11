@@ -4,6 +4,7 @@ require_once("interface/IEntity.php");
 class ComandaProducto implements IEntity {
     public $comandaId;
     public $productoId;
+    public $cantidad;
 
     function __construct()
 	{
@@ -21,10 +22,17 @@ class ComandaProducto implements IEntity {
     public function __construct2($comandaId, $productoId) {
         $this->comandaId = $comandaId;
         $this->productoId = $productoId;
+        $this->cantidad = 1;
+    }
+
+    public function __construct3($comandaId, $productoId, $cantidad) {
+        $this->comandaId = $comandaId;
+        $this->productoId = $productoId;
+        $this->cantidad = $cantidad;
     }
 
     public static function obtenerConsultaInsert() {
-        return "INSERT INTO ComandaProducto(comandaId, productoId) VALUES (:comandaId, :productoId)";
+        return "INSERT INTO ComandaProducto(comandaId, productoId, cantidad) VALUES (:comandaId, :productoId, :cantidad)";
     } 
 
     public function obtenerNombreImagen() {
@@ -40,7 +48,7 @@ class ComandaProducto implements IEntity {
         return ComandaProducto::obtenerConsultaSelect() . " WHERE comandaId = :x";
     }
     public function valoresInsert() {
-        return array(":comandaId"=>$this->comandaId, ":productoId"=>$this->productoId);
+        return array(":comandaId"=>$this->comandaId, ":productoId"=>$this->productoId, ":cantidad"=>$this->cantidad);
     }
 
     public static function obtenerConsultaSelectPorId() {

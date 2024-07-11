@@ -12,28 +12,28 @@ class ComandaService extends AService {
         parent::__construct();
         $this->productoService = new ProductoService();
     }
-    public function crearComandasDePedido($numeroPedido, $productosIds) {
+    public function crearComandasDePedido($numeroPedido, $productosIdsyCantidades) {
         $comandas = array();
         $comandasProductos = array();
+        $productosIds = array_keys($productosIdsyCantidades);
         $listaProductos = $this->productoService->obtenerProductosPorId($productosIds);
         $listaAgrupada = ArrayHelper::groupBy($listaProductos, Producto::PropiedadAgrupacion());
         foreach($listaAgrupada as $tipoUsuarioId=>$productos) {
             $comanda = new Comanda($numeroPedido);
             $comanda->asignarProductos($productos);
-            $comanda = $this->guardarComanda($comanda);
+            $comanda = $this->guardarComanda($comanda, $productosIdsyCantidades);
             array_push($comandas, $comanda);
         }
         return $comandas;
     }
 
-    private function guardarComanda(Comanda $comanda) {
+    private function guardarComanda(Comanda $comanda, $productosIdsyCantidades) {
         $comandaId = $this->crearEntidad($comanda);
         $comanda->asignarId($comandaId);
-        $listaComandaProducto = array();
         foreach($comanda->obtenerProductos() as $key=>$producto) {
-            $comandaProducto = new ComandaProducto($comandaId, $producto->obtenerId());
+            $productoId = $producto->obtenerId();
+            $comandaProducto = new ComandaProducto($comandaId, $productoId, $productosIdsyCantidades[$productoId]);
             $this->crearEntidad($comandaProducto);
-            array_push($listaComandaProducto, $comandaProducto);
         }
         return $comanda;
     }
@@ -76,7 +76,7 @@ class ComandaService extends AService {
         return $productos;
     }
 
-    public function actualizarEstadoComanda($numeroPedido, $tipoUsuario, $usuarioId, $estado, $tiempoEstimado) {
+    public function actualizarEstadoComanda($numeroPedido, $tipoUsuario, $usuarioId, $estado, $parametros) {
         $comanda = $this->obtenerComandaPorNumeroPedidoYTipoUsuario($numeroPedido, $tipoUsuario);
         if (!$comanda) {
             throw new Exception("No existe una comanda con ese numeroPedido y sector");
@@ -85,7 +85,7 @@ class ComandaService extends AService {
         if ($comanda->puedeCambiarDeEstado($estado)) {
             $comanda->actualizarEstado($estadoComanda);
             if ($estadoComanda == EstadoComanda::EnPreparacion) {
-                $comanda->tiempoPreparacionEstimado = $tiempoEstimado;
+                $comanda->tiempoPreparacionEstimado = $parametros['tiempoEstimado'];
                 $comanda->usuarioPreparacionId = $usuarioId;
             }
             $this->actualizarComanda($comanda);
@@ -113,7 +113,7 @@ class ComandaService extends AService {
     private function actualizarComanda($comanda) {
         $query = Comanda::obtenerConsultaUpdate();
         $consulta = $this->accesoDatos->prepararConsulta($query);
-        $consulta = $comanda->bindearValoresUpdateEstado($consulta);
+        $consulta = $comanda->bindearValoresUpdate($consulta);
 
         $consulta->execute();
     }

@@ -76,7 +76,7 @@ $app->group('/pedidos', function (RouteCollectorProxy $group) {
   $group->get('[/]', \PedidoController::class . ':leerTodos')
   ->add(new MAutenticacionTipoUsuario(array("cocinero","socio", "cervecero", "bartender", "pastelero")));
 
-  $group->get('/{id}', \PedidoController::class . ':leerUno')
+  $group->get('/{numeroPedido}', \PedidoController::class . ':leerUno')
   ->add(new MAutenticacionTipoUsuario(array("cocinero","socio", "cervecero", "bartender", "pastelero")));
 
   $group->get('/exportar/pdfPorFecha', \PedidoController::class . ':pdfPorFecha')

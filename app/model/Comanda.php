@@ -78,7 +78,7 @@ class Comanda implements IEntity {
     }
 
     public function valoresInsert() {
-        return array(":numeroPedido" => $this->numeroPedido, ":estadoComanda"=>$this->estadoComanda->value, ":usuarioPreparacionId"=>$this->usuarioPreparacionId);
+        return array(":numeroPedido" => $this->numeroPedido, ":estadoComanda"=>$this->estadoComanda->value, ":usuarioPreparacionId"=>$this->usuarioPreparacionId, ":tiempoPreparacionEstimado"=>$this->tiempoPreparacionEstimado);
     }
 
     public static function obtenerConsultaSelect()
@@ -98,12 +98,13 @@ class Comanda implements IEntity {
     }
 
     public static function obtenerConsultaUpdate() {
-        return "UPDATE Comanda SET estadoComanda = :estadoComanda, usuarioPreparacionId = :usuarioPreparacionId where id = :id";
+        return "UPDATE Comanda SET estadoComanda = :estadoComanda, usuarioPreparacionId = :usuarioPreparacionId, tiempoPreparacionEstimado = :tiempoPreparacionEstimado where id = :id";
     }
 
-    public function bindearValoresUpdateEstado($consulta) {
+    public function bindearValoresUpdate($consulta) {
         $consulta->bindValue(":estadoComanda", $this->estadoComanda->value);
         $consulta->bindValue(":usuarioPreparacionId", $this->usuarioPreparacionId);
+        $consulta->bindValue(":tiempoPreparacionEstimado", $this->tiempoPreparacionEstimado);
         $consulta->bindValue(":id", $this->id);
 
         return $consulta;

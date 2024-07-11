@@ -29,7 +29,8 @@ class PedidoService extends AService {
         $codigoMesa = $parametros["codigoMesa"];
         $pedido = new Pedido($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa);
         $this->crearEntidad($pedido);
-        $this->comandaService->crearComandasDePedido($pedido->numeroPedido, $parametros["productos"]);
+        $productosYCantidades = json_decode($parametros["productos"], true);
+        $this->comandaService->crearComandasDePedido($pedido->numeroPedido, $productosYCantidades);
         $this->mesaService->actualizarMesa($codigoMesa, EstadoMesa::ConClienteEsperandoPedido);
         return $numeroPedido;
     }
@@ -97,18 +98,19 @@ class PedidoService extends AService {
     }
 
     public function tiempoPorNumeroyMesa($numeroPedido, $numeroMesa) {
-        $query = "SELECT tiempoEstimadoPreparacion from Pedido where codigoMesa = :numeroMesa and numeroPedido = :numeroPedido";
+        $query = "SELECT * from Pedido where codigoMesa = :numeroMesa and numeroPedido = :numeroPedido";
         $consulta = $this->accesoDatos->prepararConsulta($query);
         $consulta->bindValue(":numeroPedido", $numeroPedido);
         $consulta->bindValue(":numeroMesa", $numeroMesa);
 
         $consulta->execute();
-        $tiempoEstimado = $consulta->fetch(PDO::FETCH_ASSOC)['tiempoEstimadoPreparacion'];
-        if (!isset($tiempoEstimado)) {
+        $pedido = $consulta->fetchObject(Pedido::class);
+        if (!isset($pedido)) {
             throw new Exception("No existe pedido con ese codigo para esa mesa. ");
         }
+        $pedido->asignarComandas($this->comandaService->obtenerComandasDePedido($numeroPedido));
         
-        return (string)$tiempoEstimado;
+        return (string)$pedido->obtenerTiempoEstimadoPreparacion();
     }
     public function actualizarEstadoPedido($numeroPedido, $estado) {
         $pedido = $this->obtenerPedidoPorNumero($numeroPedido);
@@ -147,6 +149,9 @@ class PedidoService extends AService {
         $consulta->bindValue(":numeroPedido", $numeroPedido);
         $consulta->execute();
         $pedido = $consulta->fetchObject(Pedido::class);
+        if (!isset($pedido) || $pedido == false) {
+            throw new Exception("No se encontro pedido con ese numero. ");
+        }
 
         $comandas = $this->comandaService->obtenerComandasDePedido($pedido->numeroPedido);
         $pedido->comandas = $comandas;
@@ -158,6 +163,7 @@ class PedidoService extends AService {
     public function verificarEstadoPorComandas($numeroPedido) {
         $pedido = $this->obtenerPedidoPorNumero($numeroPedido);
         if ($pedido->comandasEstanListas()) {
+            echo "LAS COMANDAS ESTAN LISTAS" . PHP_EOL;
             $this->actualizarEstadoPedido($numeroPedido, EstadoPedido::ListoParaServir);
         }
     }

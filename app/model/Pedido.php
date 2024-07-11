@@ -131,7 +131,27 @@ class Pedido implements IEntity {
         }
     }
 
+    public function obtenerTiempoEstimadoPreparacion() {
+        $max = null;
+
+        foreach ($this->comandas as $comanda) {
+            if ($max === null || $comanda->tiempoPreparacionEstimado > $max) {
+                $max = $comanda->tiempoPreparacionEstimado;
+            }
+        }
+        return $max;
+    }
+
+    public function asignarComandas($comandas) {
+        $this->comandas = $comandas;
+    }
+
     public function comandasEstanListas() {
+        var_dump($this->comandas);
+        $cantidadNoPreparadas = count(array_filter($this->comandas, function ($comanda) {
+            return $comanda->estadoComanda != EstadoComanda::Preparada->value;
+        })) == 0;
+        echo "CANTIDAD NO PREPARADAS: " . $cantidadNoPreparadas . PHP_EOL;
         return count(array_filter($this->comandas, function ($comanda) {
             return $comanda->estadoComanda != EstadoComanda::Preparada->value;
         })) == 0;

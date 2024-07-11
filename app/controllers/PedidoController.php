@@ -49,7 +49,15 @@ class PedidoController extends AController {
         }
     }
     public function leerUno($request, $response, $args) {
-        
+        try {
+            $numeroPedido = $request->getQueryParams()['numeroPedido'] ?? $args['numeroPedido'];
+            $pedido = $this->pedidoService->obtenerPedidoPorNumero($numeroPedido);
+            $content = json_encode($pedido);
+            return $this->setearResponse($response, $content);
+        }
+        catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
     public function actualizar($request, $response, $args) {
         try {
