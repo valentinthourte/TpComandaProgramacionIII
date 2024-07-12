@@ -19,7 +19,7 @@
 							"formdata": [
 								{
 									"key": "nombreUsuario",
-									"value": "Cervecero2",
+									"value": "Pastelero1",
 									"type": "text"
 								},
 								{
@@ -29,7 +29,7 @@
 								},
 								{
 									"key": "tipoUsuario",
-									"value": "Cervecero",
+									"value": "Pastelero",
 									"type": "text"
 								}
 							]
@@ -201,22 +201,22 @@
 							"formdata": [
 								{
 									"key": "nombre",
-									"value": "Cerveza artesanal",
+									"value": "Daikiri",
 									"type": "text"
 								},
 								{
 									"key": "precio",
-									"value": "2000",
+									"value": "1400",
 									"type": "text"
 								},
 								{
 									"key": "tiempoPreparacionBase",
-									"value": "5",
+									"value": "4",
 									"type": "text"
 								},
 								{
 									"key": "tipoUsuarioPreparacion",
-									"value": "3",
+									"value": "4",
 									"type": "text"
 								}
 							]
@@ -245,29 +245,14 @@
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "nombre",
-									"value": "Cerveza artesanal",
-									"type": "text"
-								},
-								{
-									"key": "precio",
-									"value": "2000",
-									"type": "text"
-								},
-								{
-									"key": "tiempoPreparacionBase",
-									"value": "5",
-									"type": "text"
-								},
-								{
-									"key": "tipoUsuarioPreparacion",
-									"value": "3",
-									"type": "text"
+									"key": "productos",
+									"type": "file",
+									"src": "/C:/Users/vthourte/Desktop/productos.csv"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:666/productos/",
+							"raw": "http://localhost:666/productos/cargaMasiva",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -275,7 +260,7 @@
 							"port": "666",
 							"path": [
 								"productos",
-								""
+								"cargaMasiva"
 							]
 						}
 					},
@@ -327,7 +312,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:666/productos/20",
+							"raw": "http://localhost:666/productos/19",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -335,7 +320,7 @@
 							"port": "666",
 							"path": [
 								"productos",
-								"20"
+								"19"
 							]
 						}
 					},
@@ -401,6 +386,26 @@
 							"path": [
 								"pedidos",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPedidoPorNumero",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/pedidos/skfq9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"pedidos",
+								"skfq9"
 							]
 						}
 					},
@@ -595,7 +600,95 @@
 			"name": "Login",
 			"item": [
 				{
-					"name": "Login",
+					"name": "LoginMozo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();\r",
+									"\r",
+									"if (responseJson.token) {\r",
+									"    pm.environment.set(\"token\", responseJson.token)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"usuario\": \"Mozo1\",\r\n    \"clave\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginCliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();\r",
+									"\r",
+									"if (responseJson.token) {\r",
+									"    pm.environment.set(\"token\", responseJson.token)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"usuario\": \"Cliente1\",\r\n    \"clave\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginSocio",
 					"event": [
 						{
 							"listen": "test",
@@ -618,6 +711,182 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"usuario\": \"PrimerSocio\",\r\n    \"clave\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginBartender",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();\r",
+									"\r",
+									"if (responseJson.token) {\r",
+									"    pm.environment.set(\"token\", responseJson.token)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"usuario\": \"Bartender1\",\r\n    \"clave\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginCocinero",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();\r",
+									"\r",
+									"if (responseJson.token) {\r",
+									"    pm.environment.set(\"token\", responseJson.token)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"usuario\": \"Cocinero1\",\r\n    \"clave\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginCervecero",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();\r",
+									"\r",
+									"if (responseJson.token) {\r",
+									"    pm.environment.set(\"token\", responseJson.token)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"usuario\": \"Cervecero1\",\r\n    \"clave\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginPastelero",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();\r",
+									"\r",
+									"if (responseJson.token) {\r",
+									"    pm.environment.set(\"token\", responseJson.token)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"usuario\": \"Pastelero1\",\r\n    \"clave\": \"1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -678,35 +947,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "ActualizarEstadoComanda",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"estado\": \"Preparada\",\r\n    \"tiempoEstimado\": 10\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:666/comandas/rchwc",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "666",
-							"path": [
-								"comandas",
-								"rchwc"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -757,6 +997,28 @@
 					"response": []
 				},
 				{
+					"name": "CantidadPedidosPorUsuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/reportes/pedidos/cantidadPorUsuario/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"reportes",
+								"pedidos",
+								"cantidadPorUsuario",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "MesaMasUsada",
 					"request": {
 						"method": "GET",
@@ -772,6 +1034,474 @@
 								"reportes",
 								"mesas",
 								"masUsada"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ConsultasEvaluacion",
+			"item": [
+				{
+					"name": "CrearPedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "cliente",
+									"value": "Valentin Thourte",
+									"type": "text"
+								},
+								{
+									"key": "productos",
+									"value": "{\n\"52\":1,\n\"53\":2,\n\"54\":1,\n\"55\": 1\n}",
+									"type": "text"
+								},
+								{
+									"key": "codigoMesa",
+									"value": "vw5vu",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:666/pedidos/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"pedidos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AgregarImagenAPedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "imagen",
+									"type": "file",
+									"src": "/C:/Users/vthourte/Desktop/´/cv/banner.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:666/pedidos/agregarImagen/skfq9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"pedidos",
+								"agregarImagen",
+								"skfq9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ComandasPorEstadoYTipo Pendientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/comandas/obtenerPorEstadoYTipoUsuario?estado=Pendiente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"comandas",
+								"obtenerPorEstadoYTipoUsuario"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "Pendiente"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ActualizarEstadoComanda EnPreparacion",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"estado\": \"EnPreparacion\",\r\n    \"tiempoEstimado\": 15\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/comandas/skfq9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"comandas",
+								"skfq9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TiempoPedidoPorNumeroYMesa",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/pedidos/tiempoRestante/0oghs?numeroMesa=3fdwa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"pedidos",
+								"tiempoRestante",
+								"0oghs"
+							],
+							"query": [
+								{
+									"key": "numeroMesa",
+									"value": "3fdwa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ComandasPorEstadoYTipo EnPreparacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/comandas/obtenerPorEstadoYTipoUsuario?estado=EnPreparacion",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"comandas",
+								"obtenerPorEstadoYTipoUsuario"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "EnPreparacion"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ActualizarEstadoComanda Preparada",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"estado\": \"Preparada\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/comandas/skfq9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"comandas",
+								"skfq9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PedidosPorEstado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/pedidos/leer/porEstado/?estado=ListoParaServir",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"pedidos",
+								"leer",
+								"porEstado",
+								""
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "ListoParaServir"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ServirPedido",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"estado\": \"Servido\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/pedidos/skfq9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"pedidos",
+								"skfq9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LeerMesas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/mesas/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"mesas",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CobrarCuenta",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"estado\": \"ConClientePagando\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/mesas/46359",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"mesas",
+								"46359"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CerrarMesa",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"estado\": \"Cerrada\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/mesas/46359",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"mesas",
+								"46359"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MesaMasUsada",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/reportes/mesas/masUsada",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"reportes",
+								"mesas",
+								"masUsada"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Encuestas",
+			"item": [
+				{
+					"name": "CrearEncuesta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"puntuacionMesa\": 10,\r\n    \"puntuacionRestaurante\": 9,\r\n    \"puntuacionMozo\": 10,\r\n    \"puntuacionCocinero\":10,\r\n    \"texto\": \"La verdad una excelencia. \",\r\n    \"experienciaEsBuena\": true,\r\n    \"numeroPedido\": \"skfq9\",\r\n    \"numeroMesa\": \"46359\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/encuestas/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"encuestas",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LeerEncuestas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"puntuacionMesa\": 10,\r\n    \"puntuacionRestaurante\": 10,\r\n    \"puntuacionMozo\": 1,\r\n    \"puntuacionCocinero\":1 ,\r\n    \"texto\": \"La verdad un desastre. \",\r\n    \"experienciaEsBuena\": false,\r\n    \"numeroPedido\": \"skfq9\",\r\n    \"numeroMesa\": \"46359\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/encuestas/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"encuestas",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LeerMejoresComentarios",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"puntuacionMesa\": 10,\r\n    \"puntuacionRestaurante\": 10,\r\n    \"puntuacionMozo\": 1,\r\n    \"puntuacionCocinero\":1 ,\r\n    \"texto\": \"La verdad un desastre. \",\r\n    \"experienciaEsBuena\": false,\r\n    \"numeroPedido\": \"skfq9\",\r\n    \"numeroMesa\": \"46359\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/reportes/encuestas/mejoresComentarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"reportes",
+								"encuestas",
+								"mejoresComentarios"
 							]
 						}
 					},
