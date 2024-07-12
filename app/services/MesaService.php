@@ -52,8 +52,9 @@ class MesaService extends AService {
         return $mesa;
     }
 
-    public function actualizarMesa($numeroMesa, $estado,$tipoUsuario = TipoUsuario::Socio) {
+    public function actualizarMesa($numeroMesa, $estado, $tipoUsuario = TipoUsuario::Socio) {
         $mesa = $this->leerMesaPorNumero($numeroMesa);
+        $estado = gettype($estado) == "string" ? EstadoMesa::from($estado) : $estado;
         $mensaje = "";
         switch($estado) {
             case EstadoMesa::ConClienteEsperandoPedido:
@@ -72,12 +73,11 @@ class MesaService extends AService {
                 }
                 break;
             case EstadoMesa::Cerrada:
-                if (!$mesa->puedeCerrarse()) {
+                if (!$mesa->puedeCerrarse() || $tipoUsuario != TipoUsuario::Socio) {
                     $mensaje = "La mesa no puede cerrarse. ";
                 }
                 break;
             case EstadoMesa::Baja:
-                
                 break;
         }
         if ($mensaje != "") {
@@ -90,16 +90,6 @@ class MesaService extends AService {
         $consulta->execute();
 
         return $this->leerMesaPorNumero($numeroMesa);
-    }
-
-    public function cobrarCuentaDeMesa($codigoMesa) {
-        $mesa = $this->obtenerMesaPorNumero($codigoMesa);
-        if ($mesa->puedeCobrarCuenta()) {
-            $this->actualizarMesa($codigoMesa, EstadoMesa::ConClientePagando);
-        }
-        else {
-            throw new Exception("La mesa no esta en el estado correcto para cobrar la cuenta. ");
-        }
     }
 
 }

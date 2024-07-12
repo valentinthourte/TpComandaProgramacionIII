@@ -19,6 +19,9 @@ class MesaController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
 
     public function leerTodos($request, $response, $args) {
@@ -30,20 +33,10 @@ class MesaController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
-
-    }
-
-    public function cobrarCuenta($request, $response, $args) {
-        try {
-            $parametros = $request->getParsedBody();
-            $codigoMesa = $parametros['codigoMesa'];
-            $this->mesaService->cobrarCuentaDeMesa($codigoMesa);
-            $payload = json_encode($this->mesaService->leerMesas()); 
-            return $this->setearResponse($response, $payload);
-        }
-        catch (Exception $e) {
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+
     }
 
     public function leerUno($request, $response, $args) {
@@ -55,16 +48,23 @@ class MesaController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
     public function actualizar($request, $response, $args) {
         try {
             $numeroMesa = $request->getQueryParams()['numeroMesa'] ?? $args['numeroMesa'];
             $estado = $request->getParsedBody()['estado'];
             $tipoUsuario = $request->getAttribute("tipoUsuario");
+            echo $tipoUsuario->value;
             $payload = json_encode($this->mesaService->actualizarMesa($numeroMesa, $estado, $tipoUsuario)); 
             return $this->setearResponse($response, $payload);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -76,6 +76,9 @@ class MesaController extends AController {
             return $this->setearResponse($response, $payload);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }

@@ -2,15 +2,18 @@
 
 require_once("AController.php");
 require_once("services/PedidoService.php");
+require_once("services/EncuestaService.php");
 require_once("services/UsuarioService.php");
 
 class ReportesController extends AController {
     
     private $pedidoService;
+    private $encuestaService;
     private $usuarioService;
     public function __construct() {
         $this->pedidoService = new PedidoService();
         $this->usuarioService = new UsuarioService();
+        $this->encuestaService = new EncuestaService();
     }
 
     public function pedidosDemorados($request, $response, $args) {
@@ -20,6 +23,9 @@ class ReportesController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -35,7 +41,26 @@ class ReportesController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
+    public function mejoresComentarios($request, $response, $args) {
+        try {
+
+            $comentarios = $this->encuestaService->obtenerMejoresComentarios();
+            $content = json_encode($comentarios);
+            return $this->setearResponse($response, $content);
+        }
+        catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+    }
+
+    
 
     public function mesaMasUsada($request, $response, $args) {
         try {
@@ -44,6 +69,9 @@ class ReportesController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -57,6 +85,9 @@ class ReportesController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }

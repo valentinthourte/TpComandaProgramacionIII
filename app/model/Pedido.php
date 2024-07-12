@@ -17,6 +17,7 @@ class Pedido implements IEntity {
     public $estadoPedido;
     public $fechaHoraFinPreparacion;
     public $rutaImagen;
+    public $mozoId;
     
     function __construct()
 	{
@@ -51,15 +52,29 @@ class Pedido implements IEntity {
             "ListoParaServir" => EstadoPedido::ListoParaServir
         };
         $this->rutaImagen = null;
-        // $this->estadoPedido = EstadoPedido::Pendiente;
     }
     
+    public function __construct6($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa, $mozoId, $estadoPedido) {
+        $this->numeroPedido = $numeroPedido;
+        $this->cliente = $cliente;
+        $this->fechaHoraInicioPreparacion = $fechaHoraInicioPreparacion;
+        $this->codigoMesa = $codigoMesa;
+        $this->estadoPedido = match ($estadoPedido) {
+            "Pendiente" => EstadoPedido::Pendiente,
+            "EnPreparacion" => EstadoPedido::EnPreparacion,
+            "ListoParaServir" => EstadoPedido::ListoParaServir
+        };
+        $this->rutaImagen = null;
+        $this->mozoId = $mozoId;
+    }
+
+
     public function valoresInsert() {
-        return array(":fechaHoraFinPreparacion"=>$this->fechaHoraFinPreparacion,":numeroPedido"=>$this->numeroPedido, ":cliente"=>$this->cliente, ":fechaHoraInicioPreparacion"=>$this->fechaHoraInicioPreparacion, ":tiempoEstimadoPreparacion"=>$this->tiempoEstimadoPreparacion, ":codigoMesa"=>$this->codigoMesa, ":estadoPedido"=>$this->estadoPedido->value);
+        return array(":mozoId"=>$this->mozoId, ":fechaHoraFinPreparacion"=>$this->fechaHoraFinPreparacion,":numeroPedido"=>$this->numeroPedido, ":cliente"=>$this->cliente, ":fechaHoraInicioPreparacion"=>$this->fechaHoraInicioPreparacion, ":tiempoEstimadoPreparacion"=>$this->tiempoEstimadoPreparacion, ":codigoMesa"=>$this->codigoMesa, ":estadoPedido"=>$this->estadoPedido->value);
     }
     
     public static function obtenerConsultaInsert() {
-        return "INSERT INTO Pedido(numeroPedido, cliente, fechaHoraInicioPreparacion, tiempoEstimadoPreparacion, codigoMesa, estadoPedido, fechaHoraFinPreparacion) VALUES (:numeroPedido,:cliente,:fechaHoraInicioPreparacion,:tiempoEstimadoPreparacion,:codigoMesa,:estadoPedido, :fechaHoraFinPreparacion)";
+        return "INSERT INTO Pedido(numeroPedido, cliente, fechaHoraInicioPreparacion, tiempoEstimadoPreparacion, codigoMesa, estadoPedido, fechaHoraFinPreparacion, mozoId) VALUES (:numeroPedido,:cliente,:fechaHoraInicioPreparacion,:tiempoEstimadoPreparacion,:codigoMesa,:estadoPedido, :fechaHoraFinPreparacion, :mozoId)";
     }
 
     public static function obtenerConsultaSelect() {
@@ -103,17 +118,18 @@ class Pedido implements IEntity {
         return "UPDATE Pedido SET rutaImagen = :rutaImagen where numeroPedido = :numeroPedido";
     }
 
-    public function validarCambioEstado($estadoPedido) {
-        switch ($estadoPedido) {
+    public function validarCambioEstado($estadoPedidoDestino) {
+        $estadoPedido = $this->obtenerEstadoPedido();
+        switch ($estadoPedidoDestino) {
             case EstadoPedido::Pendiente:
                 throw new Exception("No se puede asignar estado Pendiente al pedido.");
             case EstadoPedido::EnPreparacion:
-                if ($this->estadoPedido != EstadoPedido::Pendiente) {
+                if ($estadoPedido != EstadoPedido::Pendiente) {
                     throw new Exception("El pedido debe estar Pendiente para ponerlo en preparación.");
                 }
                 break;
             case EstadoPedido::ListoParaServir:
-                if ($this->estadoPedido != EstadoPedido::EnPreparacion) {
+                if ($estadoPedido != EstadoPedido::EnPreparacion) {
                     throw new Exception("El pedido debe estar En Preparacion para designarlo Listo para servir.");
                 }
                 if (!$this->comandasEstanListas()) {
@@ -121,8 +137,8 @@ class Pedido implements IEntity {
                 }
                 break;
             case EstadoPedido::Servido:
-                if ($this->estadoPedido != EstadoPedido::EnPreparacion) {
-                    throw new Exception("El pedido debe estar En Preparacion para designarlo Listo para servir.");
+                if ($estadoPedido != EstadoPedido::ListoParaServir) {
+                    throw new Exception("El pedido debe estar Listo para servir para Servirlo.");
                 }
                 break;
             case EstadoPedido::Anulado:
@@ -147,11 +163,6 @@ class Pedido implements IEntity {
     }
 
     public function comandasEstanListas() {
-        var_dump($this->comandas);
-        $cantidadNoPreparadas = count(array_filter($this->comandas, function ($comanda) {
-            return $comanda->estadoComanda != EstadoComanda::Preparada->value;
-        })) == 0;
-        echo "CANTIDAD NO PREPARADAS: " . $cantidadNoPreparadas . PHP_EOL;
         return count(array_filter($this->comandas, function ($comanda) {
             return $comanda->estadoComanda != EstadoComanda::Preparada->value;
         })) == 0;
@@ -162,6 +173,17 @@ class Pedido implements IEntity {
         if ($estadoPedido == EstadoPedido::Servido) {
             $this->fechaHoraFinPreparacion = (new DateTime())->format('Y-m-d H:i:s');
         }
+    }
+
+    public function estaEnPreparacion() {
+        return $this->obtenerEstadoPedido() == EstadoPedido::EnPreparacion;
+    }
+
+    public function fueServido() {
+        return $this->obtenerEstadoPedido() == EstadoPedido::Servido;
+    }
+    private function obtenerEstadoPedido(): EstadoPedido {
+        return gettype($this->estadoPedido) == "string" ? EstadoPedido::from($this->estadoPedido) : $this->estadoPedido;
     }
 
     public function toHTML(): string {

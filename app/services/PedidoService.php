@@ -21,13 +21,13 @@ class PedidoService extends AService {
         $this->mesaService = new MesaService();
     }
 
-    public function crearPedido($parametros) {
+    public function crearPedido($parametros, $mozoId) {
         $this->validarDatosPedido($parametros);
         $numeroPedido = IdHelper::generarNumeroAlfanumerico($this->LONGITUD_NUMERO_PEDIDO);
         $cliente = $parametros["cliente"]; 
         $fechaHoraInicioPreparacion = empty($parametros["fechaHoraInicioPreparacion"]) ? date('Y-m-d H:i:s') : $parametros["fechaHoraInicioPreparacion"];
         $codigoMesa = $parametros["codigoMesa"];
-        $pedido = new Pedido($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa);
+        $pedido = new Pedido($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa, $mozoId);
         $this->crearEntidad($pedido);
         $productosYCantidades = json_decode($parametros["productos"], true);
         $this->comandaService->crearComandasDePedido($pedido->numeroPedido, $productosYCantidades);
@@ -66,6 +66,18 @@ class PedidoService extends AService {
         $consulta->execute();
 
         return $pedido;
+    }
+
+    public function obtenerPedidosPorEstado($estado) {
+        $query = "SELECT * FROM Pedido WHERE estadoPedido = :estadoPedido";
+        $consulta = $this->accesoDatos->prepararConsulta($query);
+        $consulta->bindValue(":estadoPedido", $estado);
+
+        $consulta->execute();
+
+        $pedidos = $consulta->fetchAll(PDO::FETCH_CLASS, Pedido::class);
+
+        return $this->completarInfoPedidos($pedidos);
     }
 
     public function leerPedidos($estado = "") {
@@ -112,7 +124,7 @@ class PedidoService extends AService {
         
         return (string)$pedido->obtenerTiempoEstimadoPreparacion();
     }
-    public function actualizarEstadoPedido($numeroPedido, $estado) {
+    public function actualizarEstadoPedido($numeroPedido, string $estado) {
         $pedido = $this->obtenerPedidoPorNumero($numeroPedido);
 
         if (!$pedido) {
@@ -163,8 +175,14 @@ class PedidoService extends AService {
     public function verificarEstadoPorComandas($numeroPedido) {
         $pedido = $this->obtenerPedidoPorNumero($numeroPedido);
         if ($pedido->comandasEstanListas()) {
-            echo "LAS COMANDAS ESTAN LISTAS" . PHP_EOL;
-            $this->actualizarEstadoPedido($numeroPedido, EstadoPedido::ListoParaServir);
+            $this->actualizarEstadoPedido($numeroPedido, EstadoPedido::ListoParaServir->value);
+        }
+    }
+
+    public function ponerPedidoEnPreparacion($numeroPedido) {
+        $pedido = $this->obtenerPedidoPorNumero($numeroPedido);
+        if ($pedido->estaEnPreparacion() == false) {
+            $this->actualizarEstadoPedido($numeroPedido, EstadoPedido::EnPreparacion->value);
         }
     }
 

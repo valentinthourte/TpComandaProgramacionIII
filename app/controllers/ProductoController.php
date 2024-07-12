@@ -23,6 +23,9 @@ class ProductoController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
 
     public function exportarACsv($request, $response, $args) {
@@ -36,6 +39,9 @@ class ProductoController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
 
     public function leerTodos($request, $response, $args){
@@ -46,6 +52,9 @@ class ProductoController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -64,6 +73,9 @@ class ProductoController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
     public function leerUno($request, $response, $args){
         try {
@@ -73,6 +85,9 @@ class ProductoController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -87,6 +102,9 @@ class ProductoController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
 
     public function eliminar($request, $response, $args){
@@ -97,6 +115,9 @@ class ProductoController extends AController {
            return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }

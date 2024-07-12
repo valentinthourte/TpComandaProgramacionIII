@@ -21,6 +21,9 @@ class ComandaController extends AController   {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
     public function leerUno($request, $response, $args) {
         try {
@@ -30,6 +33,9 @@ class ComandaController extends AController   {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -42,14 +48,19 @@ class ComandaController extends AController   {
             $estado = $parametros['estado'];
 
             $comanda = $this->comandaService->actualizarEstadoComanda($numeroPedido, $tipoUsuario, $usuarioId, $estado, $parametros);
-            if ($estado == EstadoComanda::Preparada) {
-                echo "Verificando estado por comandas." . PHP_EOL;
+            if ($estado == EstadoComanda::EnPreparacion->value) {
+                $this->pedidoService->ponerPedidoEnPreparacion($numeroPedido);
+            }
+            else if ($estado == EstadoComanda::Preparada->value) {
                 $this->pedidoService->verificarEstadoPorComandas($numeroPedido);
             }
             $content = json_encode($comanda);
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -63,6 +74,12 @@ class ComandaController extends AController   {
             return $this->setearResponse($response, $content);             
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }

@@ -24,6 +24,9 @@ class UsuarioController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
 
 
@@ -41,6 +44,9 @@ class UsuarioController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
 
     }
     public function leerTodos($request, $response, $args){
@@ -54,6 +60,9 @@ class UsuarioController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -70,6 +79,9 @@ class UsuarioController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
     public function actualizar($request, $response, $args){
         try {
@@ -77,6 +89,9 @@ class UsuarioController extends AController {
             $parametros = $request->getParsedBody();
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -88,6 +103,9 @@ class UsuarioController extends AController {
             return $this->setearResponse($response, json_encode(array("mensaje"=>$mensaje)));
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }

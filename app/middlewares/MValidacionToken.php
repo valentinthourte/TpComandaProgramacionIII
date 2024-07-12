@@ -12,7 +12,11 @@ class MValidacionToken {
             $token = $this->obtenerToken($request);
             JWTHelper::VerificarToken($token); 
             $response = $handler->handle($request);
-        } catch (Exception $e) {
+        } 
+        catch (Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
+        catch (Error $e) {
             return $this->errorResponse($e->getMessage());
         }
 

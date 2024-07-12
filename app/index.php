@@ -11,6 +11,7 @@ require_once("controllers/PedidoController.php");
 require_once("controllers/MesaController.php");
 require_once("controllers/ComandaController.php");
 require_once("controllers/ReportesController.php");
+require_once("controllers/EncuestaController.php");
 require_once("controllers/LoginController.php");
 
 require_once("middlewares/MAutenticacionTipoUsuario.php");
@@ -44,8 +45,6 @@ $app->group('/usuarios', function (RouteCollectorProxy $group) {
 
   $group->delete('/{id}', \UsuarioController::class . ':darDeBaja')
   ->add(new MAutenticacionTipoUsuario(array("socio")));
-
-
 
   $group->get('/logins/loginsPorFecha', \UsuarioController::class . ':logins')
   ->add(new MAutenticacionTipoUsuario(array("socio")));
@@ -82,8 +81,11 @@ $app->group('/pedidos', function (RouteCollectorProxy $group) {
   $group->get('/exportar/pdfPorFecha', \PedidoController::class . ':pdfPorFecha')
   ->add(new MAutenticacionTipoUsuario(array("socio")));
 
-  $group->post('[/]', \PedidoController::class . ':crearUno')
+  $group->get('/leer/porEstado/', \PedidoController::class . ':pedidosPorEstado')
   ->add(new MAutenticacionTipoUsuario(array("mozo","socio")));
+
+  $group->post('[/]', \PedidoController::class . ':crearUno')
+  ->add(new MAutenticacionTipoUsuario(array("mozo")));
 
   $group->get('/tiempoRestante/{numeroPedido}', \PedidoController::class . ':tiempoRestantePedido')
   ->add(new MAutenticacionTipoUsuario(array("cocinero","socio", "cervecero", "bartender", "pastelero", "cliente")));
@@ -148,7 +150,21 @@ $app->group('/reportes', function (RouteCollectorProxy $group) {
   $group->get('/mesas/masUsada', \ReportesController::class . ':mesaMasUsada')
   ->add(new MAutenticacionTipoUsuario(array("socio")));
 
+  $group->get('/encuestas/mejoresComentarios', \ReportesController::class . ':mejoresComentarios')
+  ->add(new MAutenticacionTipoUsuario(array("socio")));
+
 })->add(new MValidacionToken());
+
+$app->group('/encuestas', function (RouteCollectorProxy $group) {
+  
+  $group->get('[/]', \EncuestaController::class . ':leerEncuestas')
+  ->add(new MAutenticacionTipoUsuario(array("socio")));
+  
+  $group->post('[/]', \EncuestaController::class . ':crearEncuesta')
+  ->add(new MAutenticacionTipoUsuario(array("cliente")));
+
+})->add(new MValidacionToken());
+
 
 $app->post('/login', \LoginController::class . ':loginUsuario')
 ->add(new MValidacionLogin());

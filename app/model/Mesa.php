@@ -47,6 +47,9 @@ class Mesa implements IEntity {
         return $this->estaEnEstado(EstadoMesa::ConClientePagando);
     }
 
+    public function puedeRecibirComentarios() {
+        return $this->estaEnEstado(EstadoMesa::Cerrada);
+    }
     private function estaEnEstado($estado) {
         $estadoMesa = gettype($this->estado) == "string" ? EstadoMesa::from($this->estado) : $this->estado;
         return $estadoMesa == $estado;

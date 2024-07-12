@@ -14,13 +14,17 @@ class PedidoController extends AController {
     public function crearUno($request, $response, $args) {
         $parametros = $request->getParsedBody();
         try {
-            $numeroPedido = $this->pedidoService->crearPedido($parametros);
+            $mozoId = $request->getAttribute("usuarioId");
+            $numeroPedido = $this->pedidoService->crearPedido($parametros, $mozoId);
             $content = json_encode(array("mensaje"=>"Pedido creado con éxito.", "NumeroPedido"=>$numeroPedido));
 
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 400);
+        }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
 
@@ -32,6 +36,9 @@ class PedidoController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -47,6 +54,9 @@ class PedidoController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
     public function leerUno($request, $response, $args) {
         try {
@@ -56,6 +66,9 @@ class PedidoController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -68,6 +81,9 @@ class PedidoController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
@@ -93,6 +109,24 @@ class PedidoController extends AController {
         catch (Exception $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+    }
+
+    public function pedidosPorEstado($request, $response, $args) {
+        try {
+            $estadoPedido = $request->getQueryParams()['estado'];
+            $pedidos = $this->pedidoService->obtenerPedidosPorEstado($estadoPedido);
+            $content = json_encode($pedidos);
+            return $this->setearResponse($response, $content);
+        }
+        catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
     }
 
     public function agregarImagen($request, $response, $args) {
@@ -103,6 +137,9 @@ class PedidoController extends AController {
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
+            return $this->setearResponseError($response, $e->getMessage(), 400);
+        }
+        catch (Error $e) {
             return $this->setearResponseError($response, $e->getMessage(), 400);
         }
     }
