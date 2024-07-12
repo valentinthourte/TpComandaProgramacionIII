@@ -28,8 +28,14 @@ class MesaService extends AService {
         $consulta->bindValue(":numeroMesa", $numeroMesa);
         $consulta->execute();
 
-        return $consulta->fetchObject(Mesa::class);
+        $mesa = $consulta->fetchObject(Mesa::class);
+
+        if ($mesa == false) {
+            throw new Exception("No se encontro la mesa. ");
+        }
+        return $mesa;
     }
+    
     public function eliminarMesa($numeroMesa) {
         try {
 
@@ -49,6 +55,9 @@ class MesaService extends AService {
 
     public function obtenerMesaPorNumero($codigoMesa): Mesa {
         $mesa = $this->leerMesaPorNumero($codigoMesa);
+        if ($mesa == false) {
+            throw new Exception("No se encontro la mesa. ");
+        }
         return $mesa;
     }
 

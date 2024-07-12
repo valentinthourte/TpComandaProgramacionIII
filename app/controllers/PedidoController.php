@@ -77,7 +77,7 @@ class PedidoController extends AController {
             $estado = json_decode($request->getBody()->getContents(),true)['estado'];
             $numeroPedido = $request->getQueryParams()['numeroPedido'] ?? $args['numeroPedido'];
             $pedido = $this->pedidoService->actualizarEstadoPedido($numeroPedido, $estado);
-            $content = json_encode(array("Pedido actualizado" => $pedido));
+            $content = json_encode($pedido);
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {
