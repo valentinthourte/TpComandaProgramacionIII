@@ -97,7 +97,6 @@ class PedidoController extends AController {
             $fechaHastaString = $fechaHasta->format('Y-m-d H:i:s');
             
             $nombreArchivo = str_replace(" ", "", 'pedidos_desde' . $fechaDesde->format("Y-m-d") . "_hasta_" . $fechaHasta->format("Y-m-d") . '.pdf'); // genero nombre de archivo y le saco espacios
-            echo $nombreArchivo . PHP_EOL;
             $output = $this->pedidoService->exportarPdfPorFecha($fechaDesdeString, $fechaHastaString);
             return $this->setearResponse($response, $output, 'application/pdf')
             ->withHeader('Content-Description', 'File Transfer')

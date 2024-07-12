@@ -41,17 +41,15 @@ class Pedido implements IEntity {
         $this->rutaImagen = null;
     }
 
-    public function __construct5($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa, $estadoPedido) {
+    public function __construct5($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa, $mozoId) {
         $this->numeroPedido = $numeroPedido;
         $this->cliente = $cliente;
         $this->fechaHoraInicioPreparacion = $fechaHoraInicioPreparacion;
         $this->codigoMesa = $codigoMesa;
-        $this->estadoPedido = match ($estadoPedido) {
-            "Pendiente" => EstadoPedido::Pendiente,
-            "EnPreparacion" => EstadoPedido::EnPreparacion,
-            "ListoParaServir" => EstadoPedido::ListoParaServir
-        };
+        
+        $this->estadoPedido = EstadoPedido::Pendiente;
         $this->rutaImagen = null;
+        $this->mozoId = $mozoId;
     }
     
     public function __construct6($numeroPedido, $cliente, $fechaHoraInicioPreparacion, $codigoMesa, $mozoId, $estadoPedido) {
@@ -192,13 +190,20 @@ class Pedido implements IEntity {
             $comandasHtml .= $comanda->toHTML();
         }
 
+        $imagenHtml = '';
+        if (!empty($this->rutaImagen) && file_exists($this->rutaImagen)) {
+            $imagenData = base64_encode(file_get_contents($this->rutaImagen));
+            $imagenHtml = '<img src="data:image/jpeg;base64,' . $imagenData . '" alt="Imagen del Pedido" style="width: 200px; height: auto;"/>';
+        }
+
         return "
         <p>- Número de Pedido: {$this->numeroPedido}</p>
+        $imagenHtml
         <p>- Cliente: {$this->cliente}</p>
         <p>- Fecha y Hora de Inicio de Preparación: {$this->fechaHoraInicioPreparacion}</p>
         <p>- Tiempo Estimado de Preparación: {$this->tiempoEstimadoPreparacion}</p>
         <p>- Código de Mesa: {$this->codigoMesa}</p>
-        <p>- Estado del Pedido: {$this->estadoPedido->value}</p>
+        <p>- Estado del Pedido: {$this->obtenerEstadoPedido()->value}</p>
         <p>- Comandas: </p>
         $comandasHtml
         <p>--------------------</p>

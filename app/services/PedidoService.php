@@ -117,7 +117,7 @@ class PedidoService extends AService {
 
         $consulta->execute();
         $pedido = $consulta->fetchObject(Pedido::class);
-        if (!isset($pedido)) {
+        if (!isset($pedido) || $pedido == false) {
             throw new Exception("No existe pedido con ese codigo para esa mesa. ");
         }
         $pedido->asignarComandas($this->comandaService->obtenerComandasDePedido($numeroPedido));
