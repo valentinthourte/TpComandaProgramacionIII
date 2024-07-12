@@ -19,7 +19,12 @@ class ReportesController extends AController {
     public function pedidosDemorados($request, $response, $args) {
         try {
             $pedidos = $this->pedidoService->obtenerPedidosDemorados();
-            $content = json_encode($pedidos);
+            if (count($pedidos) == 0) {
+                $content = json_encode(array("mensaje"=>"No se encontraron pedidos demorados. "));
+            }
+            else {
+                $content = json_encode($pedidos);
+            }
             return $this->setearResponse($response, $content);
         }
         catch (Exception $e) {

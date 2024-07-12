@@ -84,7 +84,7 @@ class PedidoService extends AService {
         $query = empty($estado) ? Pedido::obtenerConsultaSelect() : Pedido::obtenerConsultaSelectPorEstado();
         $consulta = $this->accesoDatos->prepararConsulta($query);
         if (!empty($estado)) {
-            $consulta->bindValue(":estado", $estado);
+            $consulta->bindValue(":estado", gettype($estado) == "string" ? $estado : $estado->value);
         }
         $consulta->execute();
 
@@ -98,6 +98,7 @@ class PedidoService extends AService {
             $comandas = $this->comandaService->obtenerComandasDePedido($pedido->numeroPedido);
             $pedido->comandas = $comandas;
             $pedido->monto = $this->obtenerMontoPedido($comandas);
+            $pedido->tiempoEstimadoPreparacion = $pedido->obtenerTiempoEstimadoPreparacion();
         }
         return $pedidos;
     }
@@ -221,12 +222,12 @@ class PedidoService extends AService {
         return array("mesa"=>$this->mesaService->leerMesaPorNumero($datos['codigoMesa']), "cantidadPedidos"=>$datos['cantidadPedidos']);
     }
     public function obtenerPedidosDemorados() {
-        $query = "SELECT * FROM pedido WHERE DATE_ADD(fechaHoraInicioPreparacion, INTERVAL tiempoEstimadoPreparacion MINUTE) < fechaHoraFinPreparacion";
-        $consulta = $this->accesoDatos->prepararConsulta($query);
-        $consulta->execute();
-        $pedidos = $consulta->fetchAll(PDO::FETCH_CLASS, Pedido::class);
+        $pedidos = $this->leerPedidos(EstadoPedido::Servido);
 
-        return $this->completarInfoPedidos($pedidos);
+        return array_filter($pedidos, function($pedido) {
+            $intervaloMinutos = "PT" . $pedido->obtenerTiempoEstimadoPreparacion() . "M";
+            return $pedido->obtenerFechaInicio()->add(new DateInterval($intervaloMinutos))  <$pedido->obtenerFechaFinPreparacion();
+        });
     }
 
     public function exportarPdfPorFecha($fechaDesde, $fechaHasta) {

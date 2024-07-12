@@ -397,7 +397,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:666/pedidos/skfq9",
+							"raw": "http://localhost:666/pedidos/b26u4",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -405,7 +405,7 @@
 							"port": "666",
 							"path": [
 								"pedidos",
-								"skfq9"
+								"b26u4"
 							]
 						}
 					},
@@ -954,27 +954,6 @@
 			"name": "Reportes",
 			"item": [
 				{
-					"name": "PedidosDemorados",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:666/reportes/pedidos/pedidosDemorados",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "666",
-							"path": [
-								"reportes",
-								"pedidos",
-								"pedidosDemorados"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "PedidosPorUsuario",
 					"request": {
 						"method": "GET",
@@ -1054,7 +1033,7 @@
 							"formdata": [
 								{
 									"key": "cliente",
-									"value": "Valentin Thourte",
+									"value": "Cliente1",
 									"type": "text"
 								},
 								{
@@ -1064,7 +1043,7 @@
 								},
 								{
 									"key": "codigoMesa",
-									"value": "vw5vu",
+									"value": "q8pt5",
 									"type": "text"
 								}
 							]
@@ -1100,7 +1079,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:666/pedidos/agregarImagen/skfq9",
+							"raw": "http://localhost:666/pedidos/agregarImagen/b26u4",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1109,7 +1088,7 @@
 							"path": [
 								"pedidos",
 								"agregarImagen",
-								"skfq9"
+								"b26u4"
 							]
 						}
 					},
@@ -1148,7 +1127,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"estado\": \"EnPreparacion\",\r\n    \"tiempoEstimado\": 15\r\n}",
+							"raw": "{\r\n    \"estado\": \"EnPreparacion\",\r\n    \"tiempoEstimado\": 12\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1156,7 +1135,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:666/comandas/skfq9",
+							"raw": "http://localhost:666/comandas/4zmh1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1164,7 +1143,7 @@
 							"port": "666",
 							"path": [
 								"comandas",
-								"skfq9"
+								"4zmh1"
 							]
 						}
 					},
@@ -1176,7 +1155,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:666/pedidos/tiempoRestante/0oghs?numeroMesa=3fdwa",
+							"raw": "http://localhost:666/pedidos/tiempoRestante/b26u4?numeroMesa=q8pt5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1185,12 +1164,12 @@
 							"path": [
 								"pedidos",
 								"tiempoRestante",
-								"0oghs"
+								"b26u4"
 							],
 							"query": [
 								{
 									"key": "numeroMesa",
-									"value": "3fdwa"
+									"value": "q8pt5"
 								}
 							]
 						}
@@ -1238,7 +1217,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:666/comandas/skfq9",
+							"raw": "http://localhost:666/comandas/4zmh1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1246,7 +1225,7 @@
 							"port": "666",
 							"path": [
 								"comandas",
-								"skfq9"
+								"4zmh1"
 							]
 						}
 					},
@@ -1295,7 +1274,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:666/pedidos/skfq9",
+							"raw": "http://localhost:666/pedidos/4zmh1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1303,7 +1282,7 @@
 							"port": "666",
 							"path": [
 								"pedidos",
-								"skfq9"
+								"4zmh1"
 							]
 						}
 					},
@@ -1344,7 +1323,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:666/mesas/46359",
+							"raw": "http://localhost:666/mesas/q8pt5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1352,7 +1331,7 @@
 							"port": "666",
 							"path": [
 								"mesas",
-								"46359"
+								"q8pt5"
 							]
 						}
 					},
@@ -1373,7 +1352,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:666/mesas/46359",
+							"raw": "http://localhost:666/mesas/q8pt5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1381,20 +1360,20 @@
 							"port": "666",
 							"path": [
 								"mesas",
-								"46359"
+								"q8pt5"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "CrearEncuesta Copy",
+					"name": "CrearEncuesta",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"puntuacionMesa\": 10,\r\n    \"puntuacionRestaurante\": 9,\r\n    \"puntuacionMozo\": 10,\r\n    \"puntuacionCocinero\":10,\r\n    \"texto\": \"La verdad una excelencia. \",\r\n    \"experienciaEsBuena\": true,\r\n    \"numeroPedido\": \"5gn07\",\r\n    \"numeroMesa\": \"vw5vu\"\r\n}",
+							"raw": "{\r\n    \"puntuacionMesa\": 4,\r\n    \"puntuacionRestaurante\": 4,\r\n    \"puntuacionMozo\": 4,\r\n    \"puntuacionCocinero\":4,\r\n    \"texto\": \"Una mala experiencia\",\r\n    \"experienciaEsBuena\": false,\r\n    \"numeroPedido\": \"b26u4\",\r\n    \"numeroMesa\": \"q8pt5\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1486,6 +1465,27 @@
 								"pedidos",
 								"exportar",
 								"pdfPorFecha"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PedidosDemorados",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/reportes/pedidos/pedidosDemorados",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"reportes",
+								"pedidos",
+								"pedidosDemorados"
 							]
 						}
 					},

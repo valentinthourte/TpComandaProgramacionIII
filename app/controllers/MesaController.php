@@ -57,7 +57,6 @@ class MesaController extends AController {
             $numeroMesa = $request->getQueryParams()['numeroMesa'] ?? $args['numeroMesa'];
             $estado = $request->getParsedBody()['estado'];
             $tipoUsuario = $request->getAttribute("tipoUsuario");
-            echo $tipoUsuario->value;
             $payload = json_encode($this->mesaService->actualizarMesa($numeroMesa, $estado, $tipoUsuario)); 
             return $this->setearResponse($response, $payload);
         }

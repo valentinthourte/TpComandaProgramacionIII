@@ -67,6 +67,14 @@ class Pedido implements IEntity {
     }
 
 
+    public function obtenerFechaInicio() {
+        return gettype($this->fechaHoraInicioPreparacion) == "string" ? DateTime::createFromFormat("Y-m-dH:i:s",str_replace(" ", "", $this->fechaHoraInicioPreparacion)) : $this->fechaHoraInicioPreparacion;
+    }
+    public function obtenerFechaFinPreparacion() {
+        return gettype($this->fechaHoraFinPreparacion) == "string" ? DateTime::createFromFormat("Y-m-dH:i:s",str_replace(" ", "", $this->fechaHoraFinPreparacion)) : $this->fechaHoraFinPreparacion;
+    }
+
+
     public function valoresInsert() {
         return array(":mozoId"=>$this->mozoId, ":fechaHoraFinPreparacion"=>$this->fechaHoraFinPreparacion,":numeroPedido"=>$this->numeroPedido, ":cliente"=>$this->cliente, ":fechaHoraInicioPreparacion"=>$this->fechaHoraInicioPreparacion, ":tiempoEstimadoPreparacion"=>$this->tiempoEstimadoPreparacion, ":codigoMesa"=>$this->codigoMesa, ":estadoPedido"=>$this->estadoPedido->value);
     }
@@ -147,7 +155,7 @@ class Pedido implements IEntity {
 
     public function obtenerTiempoEstimadoPreparacion() {
         $max = null;
-
+        
         foreach ($this->comandas as $comanda) {
             if ($max === null || $comanda->tiempoPreparacionEstimado > $max) {
                 $max = $comanda->tiempoPreparacionEstimado;
