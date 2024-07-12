@@ -1388,6 +1388,68 @@
 					"response": []
 				},
 				{
+					"name": "CrearEncuesta Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"puntuacionMesa\": 10,\r\n    \"puntuacionRestaurante\": 9,\r\n    \"puntuacionMozo\": 10,\r\n    \"puntuacionCocinero\":10,\r\n    \"texto\": \"La verdad una excelencia. \",\r\n    \"experienciaEsBuena\": true,\r\n    \"numeroPedido\": \"5gn07\",\r\n    \"numeroMesa\": \"vw5vu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/encuestas/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"encuestas",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LeerMejoresComentarios",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"puntuacionMesa\": 10,\r\n    \"puntuacionRestaurante\": 10,\r\n    \"puntuacionMozo\": 1,\r\n    \"puntuacionCocinero\":1 ,\r\n    \"texto\": \"La verdad un desastre. \",\r\n    \"experienciaEsBuena\": false,\r\n    \"numeroPedido\": \"skfq9\",\r\n    \"numeroMesa\": \"46359\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:666/reportes/encuestas/mejoresComentarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"reportes",
+								"encuestas",
+								"mejoresComentarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "MesaMasUsada",
 					"request": {
 						"method": "GET",
@@ -1403,6 +1465,27 @@
 								"reportes",
 								"mesas",
 								"masUsada"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ExportarPDFPedidosPorFecha",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:666/pedidos/exportar/pdfPorFecha",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"pedidos",
+								"exportar",
+								"pdfPorFecha"
 							]
 						}
 					},

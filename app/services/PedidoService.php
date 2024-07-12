@@ -187,7 +187,7 @@ class PedidoService extends AService {
     }
 
     public function leerPedidosPorFecha($fechaDesde, $fechaHasta) {
-        $query = Pedido::obtenerConsultaSelect() . " WHERE fechaHoraInicioPreparacion >= :fechaDesde and fechaHoraInicioPreparacion <= :fechaHasta";
+        $query = Pedido::obtenerConsultaSelect() . " WHERE fechaHoraInicioPreparacion >= :fechaDesde and fechaHoraInicioPreparacion <= :fechaHasta order by fechaHoraInicioPreparacion desc";
         $consulta = $this->accesoDatos->prepararConsulta($query);
         $consulta->bindValue(":fechaDesde", $fechaDesde);
         $consulta->bindValue(":fechaHasta", $fechaHasta);
